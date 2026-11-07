@@ -1,0 +1,79 @@
+/*
+ * Copyright © 2026 smart-car-software contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+apply plugin: 'com.android.application'
+
+android {
+    namespace "com.smartcar.notify"
+
+    compileSdkVersion 36
+
+    defaultConfig {
+        applicationId "com.smartcar.notify"
+        minSdk 28
+        // 30, not 31: from 31 on, a foreground-service start from the background (the request
+        // receiver woken by a client) is refused. The audience is Android 9–12 head units, and the
+        // app is not on Google Play.
+        targetSdkVersion 30
+        versionCode rootProject.ext.appVersionCode
+        versionName rootProject.ext.appVersionName
+
+        setProperty("archivesBaseName", "car-notification-service-${versionName}")
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../keystore.jks')
+            storePassword System.getenv("KEY_PASSWORD")
+            keyAlias "key0"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            ndk {
+                abiFilters "arm64-v8a"
+            }
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    lint {
+        disable 'ExpiredTargetSdkVersion', 'OldTargetApi'
+    }
+}
+
+dependencies {
+    implementation libs.appcompat
+    implementation libs.material
+
+    testImplementation 'junit:junit:4.13.2'
+}

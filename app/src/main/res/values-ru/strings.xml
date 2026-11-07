@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright © 2026 smart-car-software contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Уведомления на приборке</string>
+    <string name="main_intro">Единая точка показа всплывашек всех приложений на приборке: уведомления, вопросы и списки — по очереди, с ответом кнопками руля.</string>
+    <string name="channel_queue">Очередь всплывашек</string>
+    <string name="notification_queue">Всплывашек на экране и в очереди: %1$d</string>
+
+    <string name="overlay_needed">Разрешите «Поверх других приложений»: без этого всплывашки не показать.</string>
+    <string name="overlay_granted">«Поверх других приложений» разрешено.</string>
+    <string name="overlay_grant">Разрешить</string>
+
+    <string name="settings_cluster">Показывать на приборке</string>
+    <string name="settings_cluster_hint">Всплывашки появляются на приборке, под подсказкой навигатора. Если дисплея приборки нет или руль не может ответить, они показываются и на главном экране, где на них можно нажать.</string>
+    <string name="settings_wheel_keys">Отвечать кнопками руля</string>
+    <string name="settings_wheel_keys_hint">⏮ / ⏭ — выбор ответа, колёсико громкости — прокрутка списка, ⏯ — нажать. Нужны root и включённый ADB по сети (как для MConfig+); в первый раз головное устройство спросит, разрешить ли отладку, — разрешите с галочкой «всегда».</string>
+    <string name="settings_mute_media">Не управлять музыкой кнопками ⏮ ⏭ ⏯, пока висит всплывашка</string>
+    <string name="settings_hold_volume">Возвращать громкость при прокрутке списка</string>
+    <string name="settings_hold_volume_hint">Колёсико меняет громкость в любом случае; с этим переключателем громкость медиа возвращается после каждого щелчка. Временная мера, пока не найден способ забрать колёсико.</string>
+    <string name="settings_check_root_running">Проверяю… если на экране спросят, разрешите отладку.</string>
+    <string name="settings_check_root_ok">Root через ADB работает.</string>
+    <string name="settings_check_root_failed">Root недоступен: %1$s</string>
+
+    <string name="test_title">Проверка</string>
+    <string name="test_info">Уведомление</string>
+    <string name="test_question">Вопрос</string>
+    <string name="test_list">Список</string>
+    <string name="test_hint">Каждая кнопка ставит в очередь тестовую всплывашку тем же путём, что и другие приложения; нажмите несколько, чтобы увидеть очередь.</string>
+    <string name="test_info_title">Тестовое уведомление</string>
+    <string name="test_info_text">Уйдёт само, по ⏯ или по нажатию</string>
+    <string name="test_question_title">Тестовый вопрос?</string>
+    <string name="test_list_title">Выберите строку</string>
+    <string name="test_reply">Ответ: %1$s, %2$s</string>
+    <string name="answer_yes">Да</string>
+    <string name="answer_no">Нет</string>
+    <string name="answer_later">Позже</string>
+    <string-array name="test_list_rows">
+        <item>Дом</item>
+        <item>Работа</item>
+        <item>Дача</item>
+        <item>Спортзал</item>
+        <item>Школа</item>
+        <item>Аэропорт</item>
+        <item>Вокзал</item>
+        <item>Магазин</item>
+    </string-array>
+
+    <string name="diag_title">Диагностика</string>
+    <string name="diag_key_log_start">Лог кнопок руля (root через ADB)</string>
+    <string name="diag_key_log_stop">Остановить лог кнопок</string>
+    <string name="diag_volume_trace">Трассировка колёсика громкости</string>
+    <string name="diag_volume_trace_hint">В течение 15 с после нажатия покрутите громкость на один щелчок в каждую сторону, потом несколько быстрых щелчков, потом нажмите на колёсико. Всё, что голова запишет в лог за это время, уйдёт на сервер логов.</string>
+    <string name="diag_volume_trace_running">Крутите громкость — %1$d с…</string>
+    <string name="diag_volume_trace_done">Трассировка готова: %1$d строк, отправляю…</string>
+
+    <string name="settings_log_server">Сервер логов</string>
+    <string name="settings_log_server_hint">Куда уходят «Отправить логи» и трассировка (VictoriaLogs). Достаточно указать хост.</string>
+    <string name="settings_log_url">Адрес сервера</string>
+    <string name="settings_log_user">Логин</string>
+    <string name="settings_log_password">Пароль</string>
+    <string name="logs_send">Отправить логи</string>
+    <string name="logs_sending">Отправляю логи…</string>
+    <string name="logs_sent">Логи отправлены: %1$d строк</string>
+    <string name="logs_send_failed">Логи не отправлены: %1$s</string>
+    <string name="logs_no_server">Логи не отправлены: в настройках нет сервера логов</string>
+</resources>

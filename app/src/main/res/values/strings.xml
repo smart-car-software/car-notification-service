@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright © 2026 smart-car-software contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Car Notifications</string>
+    <string name="main_intro">One place for every app\'s popups on the driver\'s screen: information, questions and lists, one at a time, answered with the steering wheel.</string>
+    <string name="channel_queue">Popup queue</string>
+    <string name="notification_queue">Popups on screen and waiting: %1$d</string>
+
+    <string name="overlay_needed">Allow \"Display over other apps\": without it no popup can be shown.</string>
+    <string name="overlay_granted">\"Display over other apps\" is allowed.</string>
+    <string name="overlay_grant">Allow</string>
+
+    <string name="settings_cluster">Show on the driver\'s screen</string>
+    <string name="settings_cluster_hint">Popups appear on the instrument cluster, under the navigation hint. Without a cluster display, or while the wheel cannot answer, they show on the head unit as well, where they can be tapped.</string>
+    <string name="settings_wheel_keys">Answer with the steering wheel</string>
+    <string name="settings_wheel_keys_hint">⏮ / ⏭ choose an answer, the volume roller scrolls a list, ⏯ presses. Needs root and adb over the network switched on (as for MConfig+); the first time the unit asks to allow debugging — allow it, with \"always\".</string>
+    <string name="settings_mute_media">Keep ⏮ ⏭ ⏯ from controlling music while a popup is up</string>
+    <string name="settings_hold_volume">Put the volume back while a list is scrolled</string>
+    <string name="settings_hold_volume_hint">The roller changes the volume whatever the app does; with this on, the media volume is set back after each click. A stopgap until a way to take the roller is found.</string>
+    <string name="settings_check_root_running">Checking… allow debugging on the screen if asked.</string>
+    <string name="settings_check_root_ok">Root through adb works.</string>
+    <string name="settings_check_root_failed">No root: %1$s</string>
+
+    <string name="test_title">Try it</string>
+    <string name="test_info">Info</string>
+    <string name="test_question">Question</string>
+    <string name="test_list">List</string>
+    <string name="test_hint">Each button queues a test popup through the same door other apps use; press several to see the queue.</string>
+    <string name="test_info_title">Test notification</string>
+    <string name="test_info_text">Goes away by itself, on ⏯ or a tap</string>
+    <string name="test_question_title">Test question?</string>
+    <string name="test_list_title">Pick a row</string>
+    <string name="test_reply">Answer: %1$s, %2$s</string>
+    <string name="answer_yes">Yes</string>
+    <string name="answer_no">No</string>
+    <string name="answer_later">Later</string>
+    <string-array name="test_list_rows">
+        <item>Home</item>
+        <item>Work</item>
+        <item>Dacha</item>
+        <item>Gym</item>
+        <item>School</item>
+        <item>Airport</item>
+        <item>Station</item>
+        <item>Shop</item>
+    </string-array>
+
+    <string name="diag_title">Diagnostics</string>
+    <string name="diag_key_log_start">Wheel key log (root through adb)</string>
+    <string name="diag_key_log_stop">Stop the key log</string>
+    <string name="diag_volume_trace">Trace the volume roller</string>
+    <string name="diag_volume_trace_hint">For 15 s after the press, roll the volume one click each way, then a few quick clicks, then press the roller. Everything the unit logs meanwhile goes to the log server.</string>
+    <string name="diag_volume_trace_running">Roll the volume now — %1$d s…</string>
+    <string name="diag_volume_trace_done">Trace done: %1$d lines, sending…</string>
+
+    <string name="settings_log_server">Log server</string>
+    <string name="settings_log_server_hint">Where \"Send logs\" and the trace go (VictoriaLogs). The host alone is enough.</string>
+    <string name="settings_log_url">Server address</string>
+    <string name="settings_log_user">Login</string>
+    <string name="settings_log_password">Password</string>
+    <string name="logs_send">Send logs</string>
+    <string name="logs_sending">Sending logs…</string>
+    <string name="logs_sent">Logs sent: %1$d lines</string>
+    <string name="logs_send_failed">Logs not sent: %1$s</string>
+    <string name="logs_no_server">Logs not sent: no log server in the settings</string>
+</resources>
