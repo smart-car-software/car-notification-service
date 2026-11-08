@@ -30,7 +30,7 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   place, expiry), `CardLayout` (list window, when the head unit must show the card too),
   `WheelNavigator` (key codes → actions per card type; `forCard` is the routing table).
   Keep decision logic there.
-- No diagnostics in the release (v0.4.0 dropped the key-log view, the wheel trace, "Send logs"
+- No diagnostics in the release (v1.0.0 dropped the key-log view, the wheel trace, "Send logs"
   and the on-unit journal): `DebugLog` is logcat only. Bring a diagnostic back from git history
   (v0.3.0) when a new wheel question needs the car's logs.
 - `NotificationService` owns everything a card needs while one is up: the overlay windows
