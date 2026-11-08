@@ -32,7 +32,9 @@
     <string name="settings_wheel_keys_hint">⏮ / ⏭ — выбор ответа, колёсико громкости — прокрутка списка, ⏯ — нажать. Нужны root и включённый ADB по сети (как для MConfig+); в первый раз головное устройство спросит, разрешить ли отладку, — разрешите с галочкой «всегда».</string>
     <string name="settings_mute_media">Не управлять музыкой кнопками ⏮ ⏭ ⏯, пока висит всплывашка</string>
     <string name="settings_hold_volume">Возвращать громкость при прокрутке списка</string>
-    <string name="settings_hold_volume_hint">Колёсико меняет громкость в любом случае; с этим переключателем громкость медиа возвращается после каждого щелчка. Временная мера, пока не найден способ забрать колёсико.</string>
+    <string name="settings_hold_volume_hint">Шаг громкости забирает сервис, но голова всё равно меняет громкость; с этим переключателем она сразу возвращается.</string>
+    <string name="settings_take_focus">Не отдавать кнопки Bluetooth-музыке (проба)</string>
+    <string name="settings_take_focus_hint">Пока висит всплывашка, сервис берёт аудиофокус, чтобы медиацентр ECarX не передавал нажатия на телефон. Музыка на это время может стать тише или встать на паузу.</string>
     <string name="settings_check_root_running">Проверяю… если на экране спросят, разрешите отладку.</string>
     <string name="settings_check_root_ok">Root через ADB работает.</string>
     <string name="settings_check_root_failed">Root недоступен: %1$s</string>

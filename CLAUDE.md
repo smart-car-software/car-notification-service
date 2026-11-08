@@ -63,6 +63,9 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   takes), and a plain (not ordered — cannot be aborted) `android.intent.action.MEDIA_BUTTON`
   broadcast. The ECarX media centre receives the last one and, when its own source holds the
   focus (`KeyManager … isLossFocus(): false`), sends it over AVRCP to the phone — the "music
-  switched to Bluetooth" the driver saw. Why it believed it held the focus while Spotify played
-  is still open (v0.2.2 trace records the focus stack before and after a hold).
+  switched to Bluetooth" the driver saw. It also does so with Spotify holding the focus when
+  Bluetooth was its last source (`keyMode: 2`) — head unit behaviour, popup or not. While a card
+  is up: `AppSettings.takeFocus` (trial, off by default) takes a transient ducking focus to see
+  whether the media centre then leaves the keys alone; the trace lists MEDIA_BUTTON receivers in
+  case it has to be switched off as root instead.
 - The cluster card is laid out in px against that one panel (display #2, 460 px wide, 288 px down).

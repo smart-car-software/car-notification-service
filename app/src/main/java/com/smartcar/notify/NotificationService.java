@@ -25,6 +25,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.IBinder;
@@ -79,6 +81,10 @@ public class NotificationService extends Service {
     private SoundPool sounds;
     private int chimeId;
     private boolean chimeLoaded;
+    private boolean chimeWanted;
+    private long chimeWantedAt;
+    /** A chime that waited for the sound to load longer than this would sound out of place. */
+    private static final long CHIME_LATE_MS = 2_000L;
 
     private boolean wheelConnected;
     private boolean mediaHeld;
@@ -110,12 +116,55 @@ public class NotificationService extends Service {
         }
     };
     private final Runnable releaseMedia = () -> {
-        if (shown == null && mediaHeld) {
+        if (shown != null) {
+            return;
+        }
+        if (mediaHeld) {
             mediaKeys.stop();
             mediaHeld = false;
             DebugLog.i(TAG, "Media keys released");
         }
+        releaseFocus();
     };
+
+    private AudioFocusRequest focus;
+
+    /** See {@link AppSettings#takeFocus}: the media centre leaves the keys alone without it. */
+    private void takeFocus() {
+        if (focus != null || !AppSettings.takeFocus(this)) {
+            return;
+        }
+        AudioManager am = getSystemService(AudioManager.class);
+        if (am == null) {
+            return;
+        }
+        AudioFocusRequest r = new AudioFocusRequest.Builder(
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANT)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build())
+                .setOnAudioFocusChangeListener(change -> DebugLog.each(TAG, "Focus change " + change))
+                .build();
+        int result = am.requestAudioFocus(r);
+        DebugLog.i(TAG, "Audio focus " + (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+                ? "taken" : "NOT taken (" + result + ")"));
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            focus = r;
+        }
+    }
+
+    private void releaseFocus() {
+        if (focus == null) {
+            return;
+        }
+        AudioManager am = getSystemService(AudioManager.class);
+        if (am != null) {
+            am.abandonAudioFocusRequest(focus);
+        }
+        focus = null;
+        DebugLog.i(TAG, "Audio focus given back");
+    }
     private final Runnable expiryTick = new Runnable() {
         @Override
         public void run() {
@@ -257,6 +306,7 @@ public class NotificationService extends Service {
         // must not answer this one.
         main.removeCallbacks(stopWheel);
         main.removeCallbacks(releaseMedia);
+        takeFocus();
         startWheel();
         if (card.type == Card.Type.LIST && AppSettings.holdVolume(this)
                 && (wheelConnected || mediaHeld)) {
@@ -575,7 +625,16 @@ public class NotificationService extends Service {
                             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                             .build())
                     .build();
-            sounds.setOnLoadCompleteListener((pool, id, status) -> chimeLoaded = status == 0);
+            sounds.setOnLoadCompleteListener((pool, id, status) -> {
+                chimeLoaded = status == 0;
+                // The service starts with the first card, so that card's chime comes before the
+                // sound has loaded: it plays now, if it is still a fresh card.
+                if (chimeLoaded && chimeWanted
+                        && SystemClock.elapsedRealtime() - chimeWantedAt < CHIME_LATE_MS) {
+                    chime();
+                }
+                chimeWanted = false;
+            });
             chimeId = sounds.load(this, R.raw.popup_sound, 1);
         } catch (RuntimeException e) {
             DebugLog.w(TAG, "Sound not set up", e);
@@ -583,8 +642,16 @@ public class NotificationService extends Service {
     }
 
     private void chime() {
-        if (sounds != null && chimeLoaded) {
-            sounds.play(chimeId, 1f, 1f, 1, 0, 1f);
+        if (sounds == null) {
+            return;
+        }
+        if (!chimeLoaded) {
+            chimeWanted = true;
+            chimeWantedAt = SystemClock.elapsedRealtime();
+            return;
+        }
+        if (sounds.play(chimeId, 1f, 1f, 1, 0, 1f) == 0) {
+            DebugLog.w(TAG, "Chime not played", null);
         }
     }
 
@@ -654,6 +721,7 @@ public class NotificationService extends Service {
         keyLog.stop();
         mediaKeys.stop();
         volume.stop();
+        releaseFocus();
         if (sounds != null) {
             sounds.release();
         }

@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         });
         mute.setOnCheckedChangeListener((b, on) -> AppSettings.setMuteMedia(this, on));
         hold.setOnCheckedChangeListener((b, on) -> AppSettings.setHoldVolume(this, on));
+        MaterialSwitch focus = findViewById(R.id.switchTakeFocus);
+        focus.setChecked(AppSettings.takeFocus(this));
+        focus.setOnCheckedChangeListener((b, on) -> AppSettings.setTakeFocus(this, on));
         if (wheel.isChecked()) {
             checkRoot();
         }

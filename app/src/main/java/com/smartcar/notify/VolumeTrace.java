@@ -44,6 +44,11 @@ final class VolumeTrace {
     private static final String FOCUS = " dumpsys audio | grep -A 12 -i \"focus stack\";";
     private static final String COMMAND = "echo == before; dumpsys audio | grep -A 8 STREAM_MUSIC;"
             + FOCUS + " dumpsys media_session | head -n 200;"
+            // Who receives the MEDIA_BUTTON broadcast xsf sends besides the session dispatch:
+            // declared in a manifest (could be switched off with pm) or registered at run time.
+            + " echo == media button receivers;"
+            + " cmd package query-receivers -a android.intent.action.MEDIA_BUTTON 2>&1 | head -n 60;"
+            + " dumpsys activity broadcasts 2>&1 | grep -B 6 -A 2 MEDIA_BUTTON | head -n 80;"
             + " echo == trace; timeout " + SECONDS + " logcat -b all -v threadtime -T 1;"
             + " echo == after; dumpsys audio | grep -A 8 STREAM_MUSIC;" + FOCUS
             + " dumpsys media_session | head -n 200; echo == end";
