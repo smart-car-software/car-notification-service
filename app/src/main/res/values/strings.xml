@@ -64,9 +64,9 @@
     <string name="diag_title">Diagnostics</string>
     <string name="diag_key_log_start">Wheel key log (root through adb)</string>
     <string name="diag_key_log_stop">Stop the key log</string>
-    <string name="diag_volume_trace">Trace the volume roller</string>
-    <string name="diag_volume_trace_hint">For 15 s after the press, roll the volume one click each way, then a few quick clicks, then press the roller. Everything the unit logs meanwhile goes to the log server.</string>
-    <string name="diag_volume_trace_running">Roll the volume now — %1$d s…</string>
+    <string name="diag_volume_trace">Trace the wheel</string>
+    <string name="diag_volume_trace_hint">Start some music. For 15 s after the press the wheel keys and the roller are held as for a list card: roll the volume both ways, press ⏭, ⏮ and ⏯. Everything the unit logs meanwhile goes to the log server.</string>
+    <string name="diag_volume_trace_running">Roll the volume, press ⏭ ⏮ ⏯ — %1$d s…</string>
     <string name="diag_volume_trace_done">Trace done: %1$d lines, sending…</string>
 
     <string name="settings_log_server">Log server</string>

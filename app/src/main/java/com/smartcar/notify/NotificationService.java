@@ -258,6 +258,7 @@ public class NotificationService extends Service {
         if (card.type == Card.Type.LIST && AppSettings.holdVolume(this) && wheelConnected) {
             volume.start();
         }
+        captureRoller(card);
         showOnCluster(card);
         updateHeadUnit();
         render();
@@ -277,9 +278,21 @@ public class NotificationService extends Service {
         firstVisible = CardLayout.firstVisible(selected, card.options.length,
                 CardLayout.VISIBLE_ROWS, firstVisible);
         removeWindows();
+        captureRoller(card);
         showOnCluster(card);
         updateHeadUnit();
         render();
+    }
+
+    /**
+     * A list takes the volume roller from the volume while the media keys are held: the click
+     * still reaches the key log (that is what scrolls), the volume no longer moves.
+     * {@link VolumeGuard} stays as the fallback for when the session is not the one picked.
+     */
+    private void captureRoller(Card card) {
+        boolean on = mediaHeld && card.type == Card.Type.LIST && AppSettings.holdVolume(this);
+        mediaKeys.captureVolume(on,
+                step -> DebugLog.each(TAG, "Volume step " + step + " taken by the session"));
     }
 
     private void showOnCluster(Card card) {
@@ -380,6 +393,7 @@ public class NotificationService extends Service {
         main.removeCallbacks(timeout);
         removeWindows();
         volume.stop();
+        mediaKeys.captureVolume(false, null); // The roller is the volume again at once.
         shown = null;
     }
 

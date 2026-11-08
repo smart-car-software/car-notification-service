@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
+import android.media.VolumeProvider;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.util.Log;
@@ -45,6 +46,8 @@ final class MediaKeyCatcher {
     private final Context context;
     private MediaSession session;
     private AudioTrack silence;
+    private boolean volumeCaptured;
+    private static final int REMOTE_MAX = 100;
 
     MediaKeyCatcher(Context context) {
         this.context = context.getApplicationContext();
@@ -70,15 +73,54 @@ final class MediaKeyCatcher {
                 return true; // Swallowed: the player must not act on it.
             }
         });
+        s.setActive(true);
+        // Set once active: a session turning to "playing" goes to the top of the stack, ahead of
+        // a player that is itself playing — which is what makes it the default volume session.
         s.setPlaybackState(new PlaybackState.Builder()
                 .setActions(PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT
                         | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
                 .setState(PlaybackState.STATE_PLAYING, 0, 0f)
                 .build());
-        s.setActive(true);
         session = s;
         silence = playSilence();
         return silence != null;
+    }
+
+    /**
+     * Takes the volume roller too, or gives it back. The ECarX input service turns a roller click
+     * into {@code AudioManager.adjustSuggestedStreamVolume(USE_DEFAULT_STREAM_TYPE)}, which
+     * Android 9 hands to the default volume session — the active session that played last, which
+     * is this one while it holds the keys. A session on remote playback gets the step in
+     * {@link VolumeProvider#onAdjustVolume} instead of the stream changing: the volume stays put.
+     *
+     * @param listener told each step (+1 up, -1 down); may be null
+     */
+    void captureVolume(boolean on, VolumeListener listener) {
+        if (session == null || on == volumeCaptured) {
+            return;
+        }
+        volumeCaptured = on;
+        if (on) {
+            session.setPlaybackToRemote(new VolumeProvider(VolumeProvider.VOLUME_CONTROL_RELATIVE,
+                    REMOTE_MAX, REMOTE_MAX / 2) {
+                @Override
+                public void onAdjustVolume(int direction) {
+                    if (direction != 0 && listener != null) {
+                        listener.onVolumeStep(direction);
+                    }
+                }
+            });
+        } else {
+            session.setPlaybackToLocal(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build());
+        }
+        Log.i(TAG, "Volume roller " + (on ? "captured" : "released"));
+    }
+
+    interface VolumeListener {
+        void onVolumeStep(int direction);
     }
 
     /** A looping buffer of zeros as media audio: "playing", inaudible, no focus requested. */
@@ -118,6 +160,7 @@ final class MediaKeyCatcher {
             silence.release();
             silence = null;
         }
+        volumeCaptured = false;
         if (session != null) {
             session.setActive(false);
             session.release();

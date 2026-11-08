@@ -64,9 +64,9 @@
     <string name="diag_title">Диагностика</string>
     <string name="diag_key_log_start">Лог кнопок руля (root через ADB)</string>
     <string name="diag_key_log_stop">Остановить лог кнопок</string>
-    <string name="diag_volume_trace">Трассировка колёсика громкости</string>
-    <string name="diag_volume_trace_hint">В течение 15 с после нажатия покрутите громкость на один щелчок в каждую сторону, потом несколько быстрых щелчков, потом нажмите на колёсико. Всё, что голова запишет в лог за это время, уйдёт на сервер логов.</string>
-    <string name="diag_volume_trace_running">Крутите громкость — %1$d с…</string>
+    <string name="diag_volume_trace">Трассировка руля</string>
+    <string name="diag_volume_trace_hint">Включите музыку. 15 с после нажатия кнопки руля и колёсико удерживаются, как при показе списка. За это время покрутите громкость в обе стороны, нажмите ⏭, ⏮ и ⏯. Всё, что голова запишет в лог, уйдёт на сервер логов.</string>
+    <string name="diag_volume_trace_running">Крутите громкость, жмите ⏭ ⏮ ⏯ — %1$d с…</string>
     <string name="diag_volume_trace_done">Трассировка готова: %1$d строк, отправляю…</string>
 
     <string name="settings_log_server">Сервер логов</string>

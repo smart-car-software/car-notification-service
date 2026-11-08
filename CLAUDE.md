@@ -46,8 +46,13 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   cards too, or the echo of the press that closed one card answers the next. For the same reason
   the media keys are released only `MEDIA_LINGER_MS` after the last card: released at once, the
   answering ⏯ reached the player and paused or started the music.
-- A list scrolls with the volume roller (200024 / 200025) only — the user's requirement. The roller
-  cannot be taken: the volume changes anyway. `VolumeGuard` puts the Android media volume back as a
-  stopgap; `VolumeTrace` is the diagnostic to find a real way. Whether one roller click is one log
-  line is not yet confirmed in the car.
+- A list scrolls with the volume roller (200024 / 200025) only — the user's requirement. One click
+  is one `onKeyPressed` line (confirmed in the car). The volume step itself is made by
+  `ecarx.xsf.inputservice` as `AudioManager.adjustSuggestedStreamVolume(USE_DEFAULT_STREAM_TYPE)`,
+  which `MediaSessionService` hands to the default volume session (the trace showed Spotify's) — so
+  for a list `MediaKeyCatcher.captureVolume` puts the held session on remote playback and takes
+  the step (v0.2.0, not yet confirmed in the car). `VolumeGuard` puts the media volume back if it
+  moved anyway. `VolumeTrace` («Трассировка руля») records everything for 15 s with the keys and
+  the roller held as for a list.
+- Music in the car came from Spotify and from the phone over Bluetooth (A2DP session).
 - The cluster card is laid out in px against that one panel (display #2, 460 px wide, 288 px down).

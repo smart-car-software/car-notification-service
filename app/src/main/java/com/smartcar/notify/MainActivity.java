@@ -214,7 +214,18 @@ public class MainActivity extends AppCompatActivity {
         }
         traceButton.setEnabled(false);
         diag.setText(getString(R.string.diag_volume_trace_running, VolumeTrace.SECONDS));
+        // Held the way a list card holds them, so the trace shows what still gets past.
+        MediaKeyCatcher held = new MediaKeyCatcher(this);
+        boolean holding = held.start((code, pressed) -> {
+            if (pressed) {
+                runOnUiThread(() -> appendDiag("media key " + code + " taken by the session"));
+            }
+        });
+        held.captureVolume(holding, step -> runOnUiThread(
+                () -> appendDiag("volume step " + step + " taken by the session")));
+        appendDiag(holding ? "media keys and roller held" : "media keys NOT held");
         trace.start(capture -> {
+            held.stop();
             traceButton.setEnabled(true);
             int lines = capture.isEmpty() ? 0 : capture.split("\n").length;
             appendDiag(getString(R.string.diag_volume_trace_done, lines));

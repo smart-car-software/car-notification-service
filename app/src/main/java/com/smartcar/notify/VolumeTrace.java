@@ -42,7 +42,7 @@ final class VolumeTrace {
     static final int SECONDS = 15;
     /** No single quotes: it runs inside {@code su 0 sh -c '…'}. */
     private static final String COMMAND = "echo == before; dumpsys audio | grep -A 8 STREAM_MUSIC;"
-            + " dumpsys media_session | head -n 80;"
+            + " dumpsys media_session | head -n 200;"
             + " echo == devices; getevent -pl 2>&1 | head -n 300;"
             + " echo == trace; (timeout " + SECONDS + " getevent -lt 2>&1 | sed s/^/EV:/) &"
             + " timeout " + SECONDS + " logcat -b all -v threadtime -T 1; wait;"
