@@ -22,34 +22,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.materialswitch.MaterialSwitch;
 
-/**
- * Settings, the three test cards, and the diagnostics the wheel still needs: the key log as it
- * comes and the volume-roller trace. Everything a client app used to carry for the cluster lives
- * here now, once.
- */
+/** Settings and the three test cards. */
 public class MainActivity extends AppCompatActivity {
-    private static final int MAX_DIAG_CHARS = 6_000;
-
     private RootStream rootCheck;
-    private RootStream keyLog;
-    private VolumeTrace trace;
     private TextView wheelStatus;
     private TextView overlay;
-    private TextView diag;
-    private Button keyLogButton;
-    private Button traceButton;
-    private EditText logUrl;
-    private EditText logUser;
-    private EditText logPassword;
     private int testCount;
 
     @Override
@@ -57,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rootCheck = new RootStream(this);
-        keyLog = new RootStream(this);
-        trace = new VolumeTrace(this);
 
         overlay = findViewById(R.id.textOverlay);
         findViewById(R.id.btnOverlay).setOnClickListener(v -> startActivity(new Intent(
@@ -90,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
         });
         mute.setOnCheckedChangeListener((b, on) -> AppSettings.setMuteMedia(this, on));
         hold.setOnCheckedChangeListener((b, on) -> AppSettings.setHoldVolume(this, on));
-        MaterialSwitch focus = findViewById(R.id.switchTakeFocus);
-        focus.setChecked(AppSettings.takeFocus(this));
-        focus.setOnCheckedChangeListener((b, on) -> AppSettings.setTakeFocus(this, on));
         if (wheel.isChecked()) {
             checkRoot();
         }
@@ -106,25 +84,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnTestList).setOnClickListener(v -> test(NotifyContract.TYPE_LIST,
                 getString(R.string.test_list_title), null,
                 getResources().getStringArray(R.array.test_list_rows)));
-
-        diag = findViewById(R.id.textDiag);
-        keyLogButton = findViewById(R.id.btnKeyLog);
-        keyLogButton.setOnClickListener(v -> toggleKeyLog());
-        traceButton = findViewById(R.id.btnVolumeTrace);
-        traceButton.setOnClickListener(v -> startTrace());
-        findViewById(R.id.btnSendLogs).setOnClickListener(v -> {
-            saveLogServer();
-            Toast.makeText(this, R.string.logs_sending, Toast.LENGTH_SHORT).show();
-            LogSender.send(this, diag.getText().toString(),
-                    msg -> Toast.makeText(this, msg, Toast.LENGTH_LONG).show());
-        });
-
-        logUrl = findViewById(R.id.editLogUrl);
-        logUser = findViewById(R.id.editLogUser);
-        logPassword = findViewById(R.id.editLogPassword);
-        logUrl.setText(AppSettings.logUrl(this));
-        logUser.setText(AppSettings.logUser(this));
-        logPassword.setText(AppSettings.logPassword(this));
     }
 
     @Override
@@ -133,20 +92,6 @@ public class MainActivity extends AppCompatActivity {
         overlay.setText(Settings.canDrawOverlays(this)
                 ? R.string.overlay_granted : R.string.overlay_needed);
         findViewById(R.id.btnOverlay).setEnabled(!Settings.canDrawOverlays(this));
-    }
-
-    @Override
-    protected void onPause() {
-        saveLogServer();
-        super.onPause();
-    }
-
-    private void saveLogServer() {
-        AppSettings.setLogServer(this, text(logUrl), text(logUser), text(logPassword));
-    }
-
-    private static String text(EditText e) {
-        return e.getText() == null ? "" : e.getText().toString();
     }
 
     /** Through the same door a client uses, so the test proves the whole path. */
@@ -187,86 +132,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private boolean keyLogOn;
-    private static final long HOLD_AT_MS = 2_000L;
-
-    /** Every line InputImpl writes — presses, releases, the roller — as it comes. */
-    private void toggleKeyLog() {
-        if (keyLogOn) {
-            keyLog.stop();
-            return;
-        }
-        keyLogOn = true;
-        keyLogButton.setText(R.string.diag_key_log_stop);
-        diag.setText("");
-        keyLog.start("logcat -b main -v time -T 1 InputImpl:V *:S", null, line -> {
-            if (line == null) {
-                keyLogOn = false;
-                keyLogButton.setText(R.string.diag_key_log_start);
-                return;
-            }
-            appendDiag(line);
-        });
-    }
-
-    private void startTrace() {
-        if (trace.isRunning()) {
-            return;
-        }
-        if (keyLogOn) {
-            keyLog.stop();
-        }
-        traceButton.setEnabled(false);
-        diag.setText(getString(R.string.diag_volume_trace_running, VolumeTrace.SECONDS));
-        // Held the way a list card holds them, so the trace shows what still gets past.
-        // Taken a moment in, so the "before" dumps and the start of the hold are both in the trace.
-        MediaKeyCatcher held = new MediaKeyCatcher(this);
-        Runnable hold = () -> {
-            boolean holding = held.start((code, pressed) -> {
-                if (pressed) {
-                    runOnUiThread(() -> appendDiag("media key " + code + " taken by the session"));
-                }
-            });
-            held.captureVolume(holding, step -> runOnUiThread(
-                    () -> appendDiag("volume step " + step + " taken by the session")));
-            appendDiag(holding ? "media keys and roller held" : "media keys NOT held");
-        };
-        Runnable release = () -> {
-            held.stop();
-            appendDiag("media keys released");
-        };
-        diag.postDelayed(hold, HOLD_AT_MS);
-        diag.postDelayed(release, VolumeTrace.RELEASE_AT_SECONDS * 1000L);
-        trace.start(capture -> {
-            diag.removeCallbacks(hold);
-            diag.removeCallbacks(release);
-            held.stop();
-            traceButton.setEnabled(true);
-            int lines = capture.isEmpty() ? 0 : capture.split("\n").length;
-            appendDiag(getString(R.string.diag_volume_trace_done, lines));
-            saveLogServer();
-            LogSender.send(this, null, capture,
-                    msg -> {
-                        appendDiag(msg);
-                        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-                    });
-        });
-    }
-
-    private void appendDiag(String line) {
-        CharSequence old = diag.getText();
-        String s = old + (old.length() > 0 ? "\n" : "") + line;
-        if (s.length() > MAX_DIAG_CHARS) {
-            s = s.substring(s.length() - MAX_DIAG_CHARS);
-        }
-        diag.setText(s);
-    }
-
     @Override
     protected void onDestroy() {
         rootCheck.stop();
-        keyLog.stop();
-        trace.stop();
         super.onDestroy();
     }
 }

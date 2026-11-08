@@ -25,8 +25,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
-import android.media.AudioFocusRequest;
-import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.IBinder;
@@ -124,47 +122,7 @@ public class NotificationService extends Service {
             mediaHeld = false;
             DebugLog.i(TAG, "Media keys released");
         }
-        releaseFocus();
     };
-
-    private AudioFocusRequest focus;
-
-    /** See {@link AppSettings#takeFocus}: the media centre leaves the keys alone without it. */
-    private void takeFocus() {
-        if (focus != null || !AppSettings.takeFocus(this)) {
-            return;
-        }
-        AudioManager am = getSystemService(AudioManager.class);
-        if (am == null) {
-            return;
-        }
-        AudioFocusRequest r = new AudioFocusRequest.Builder(
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-                .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ASSISTANT)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build())
-                .setOnAudioFocusChangeListener(change -> DebugLog.each(TAG, "Focus change " + change))
-                .build();
-        int result = am.requestAudioFocus(r);
-        DebugLog.i(TAG, "Audio focus " + (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-                ? "taken" : "NOT taken (" + result + ")"));
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            focus = r;
-        }
-    }
-
-    private void releaseFocus() {
-        if (focus == null) {
-            return;
-        }
-        AudioManager am = getSystemService(AudioManager.class);
-        if (am != null) {
-            am.abandonAudioFocusRequest(focus);
-        }
-        focus = null;
-        DebugLog.i(TAG, "Audio focus given back");
-    }
     private final Runnable expiryTick = new Runnable() {
         @Override
         public void run() {
@@ -306,7 +264,6 @@ public class NotificationService extends Service {
         // must not answer this one.
         main.removeCallbacks(stopWheel);
         main.removeCallbacks(releaseMedia);
-        takeFocus();
         startWheel();
         if (card.type == Card.Type.LIST && AppSettings.holdVolume(this)
                 && (wheelConnected || mediaHeld)) {
@@ -541,7 +498,7 @@ public class NotificationService extends Service {
         }
     }
 
-    /** @param route where the press came from, for the journal */
+    /** @param route where the press came from, for the log */
     private void onKey(int code, boolean mediaSession, String route) {
         if (shown == null) {
             return;
@@ -721,7 +678,6 @@ public class NotificationService extends Service {
         keyLog.stop();
         mediaKeys.stop();
         volume.stop();
-        releaseFocus();
         if (sounds != null) {
             sounds.release();
         }

@@ -24,5 +24,6 @@ public class NotifyApp extends Application {
     public void onCreate() {
         super.onCreate();
         DebugLog.init(this);
+        AppSettings.forgetLogServer(this);
     }
 }

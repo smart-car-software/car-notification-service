@@ -24,14 +24,13 @@
 
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-    <!-- usesCleartextTraffic: a log server on the home LAN may be plain http. -->
+    <!-- INTERNET: the wheel's key log comes over a socket to the unit's own adbd (127.0.0.1). -->
     <application
         android:name=".NotifyApp"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Notify"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.Notify">
 
         <activity
             android:name=".MainActivity"

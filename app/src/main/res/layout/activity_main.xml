@@ -17,7 +17,6 @@
   -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
@@ -86,17 +85,6 @@
             android:layout_marginStart="16dp"
             android:text="@string/settings_hold_volume_hint" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchTakeFocus"
-            style="@style/Switch"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings_take_focus" />
-
-        <TextView
-            style="@style/Hint"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings_take_focus_hint" />
-
         <TextView
             style="@style/Heading"
             android:layout_marginTop="24dp"
@@ -133,97 +121,5 @@
         <TextView
             style="@style/Hint"
             android:text="@string/test_hint" />
-
-        <TextView
-            style="@style/Heading"
-            android:layout_marginTop="24dp"
-            android:text="@string/diag_title" />
-
-        <Button
-            android:id="@+id/btnKeyLog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/diag_key_log_start" />
-
-        <Button
-            android:id="@+id/btnVolumeTrace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/diag_volume_trace" />
-
-        <TextView
-            style="@style/Hint"
-            android:text="@string/diag_volume_trace_hint" />
-
-        <Button
-            android:id="@+id/btnSendLogs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/logs_send" />
-
-        <TextView
-            android:id="@+id/textDiag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="monospace"
-            android:textColor="@color/text_primary"
-            android:textIsSelectable="true"
-            android:textSize="13sp" />
-
-        <TextView
-            style="@style/Heading"
-            android:layout_marginTop="24dp"
-            android:text="@string/settings_log_server" />
-
-        <TextView
-            style="@style/Hint"
-            android:text="@string/settings_log_server_hint" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/settings_log_url">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editLogUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textUri"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/settings_log_user">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editLogUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/settings_log_password"
-            app:endIconMode="password_toggle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editLogPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 </ScrollView>

@@ -28,8 +28,11 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
 
 - Pure, tested: `Card` (request model, validation, defaults), `CardQueue` (FIFO, same id updates in
   place, expiry), `CardLayout` (list window, when the head unit must show the card too),
-  `WheelNavigator` (key codes → actions per card type; `forCard` is the routing table), `LogPayload`.
+  `WheelNavigator` (key codes → actions per card type; `forCard` is the routing table).
   Keep decision logic there.
+- No diagnostics in the release (v0.4.0 dropped the key-log view, the wheel trace, "Send logs"
+  and the on-unit journal): `DebugLog` is logcat only. Bring a diagnostic back from git history
+  (v0.3.0) when a new wheel question needs the car's logs.
 - `NotificationService` owns everything a card needs while one is up: the overlay windows
   (`ClusterDisplay`, `CardView`), the key log (`WheelKeyLog`), the held media keys
   (`MediaKeyCatcher`), `VolumeGuard`, the chime. It stops itself a minute after the queue empties.
@@ -55,8 +58,7 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   passes the adjustment on, and `com.android.car` (its AudioPolicy volume callback) sets the
   stream — `VolumeGuard` puts it back after each step. The session's steps are what scrolls a list
   (key log roller lines are ignored then): the key log once went quiet in the car while "connected".
-  One detent can give 2–3 steps within a few ms — `WheelNavigator.isRollerBounce` folds them. `VolumeTrace` («Трассировка руля») records everything for 15 s with the keys and
-  the roller held as for a list.
+  One detent can give 2–3 steps within a few ms — `WheelNavigator.isRollerBounce` folds them.
 - Music in the car came from Spotify and from the phone over Bluetooth (A2DP session).
 - For ⏮ ⏭ ⏯ `ecarx.xsf.inputservice` does three things: `ecarx.intent.action.media_*_pressed/
   released` broadcasts, a key event into media-session dispatch (that is what `MediaKeyCatcher`
@@ -64,8 +66,9 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   broadcast. The ECarX media centre receives the last one and, when its own source holds the
   focus (`KeyManager … isLossFocus(): false`), sends it over AVRCP to the phone — the "music
   switched to Bluetooth" the driver saw. It also does so with Spotify holding the focus when
-  Bluetooth was its last source (`keyMode: 2`) — head unit behaviour, popup or not. While a card
-  is up: `AppSettings.takeFocus` (trial, off by default) takes a transient ducking focus to see
-  whether the media centre then leaves the keys alone; the trace lists MEDIA_BUTTON receivers in
-  case it has to be switched off as root instead.
+  Bluetooth was its last source (`keyMode: 2`) — head unit behaviour, popup or not. Taking a
+  transient audio focus while a card is up does not help (tried in v0.3.0: the Bluetooth sink
+  takes it straight back). Left as is — the driver does not use Bluetooth music. Next step if it
+  ever matters: list the MEDIA_BUTTON receivers (`cmd package query-receivers`, `dumpsys activity
+  broadcasts`) to see whether the media centre's could be switched off as root for a card.
 - The cluster card is laid out in px against that one panel (display #2, 460 px wide, 288 px down).

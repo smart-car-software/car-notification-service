@@ -26,7 +26,6 @@ final class AppSettings {
     private static final String KEY_WHEEL = "wheel_keys";
     private static final String KEY_MUTE = "mute_media";
     private static final String KEY_HOLD_VOLUME = "hold_volume";
-    private static final String KEY_TAKE_FOCUS = "take_focus";
     private static final String KEY_LOG_URL = "log_url";
     private static final String KEY_LOG_USER = "log_user";
     private static final String KEY_LOG_PASSWORD = "log_password";
@@ -83,20 +82,6 @@ final class AppSettings {
         set(c, KEY_HOLD_VOLUME, on);
     }
 
-    /**
-     * While a card is up, take a transient (ducking) audio focus. The ECarX media centre acts on
-     * the wheel's MEDIA_BUTTON broadcast — which nothing can stop — when it holds the focus, and
-     * sends it to the phone over Bluetooth; with the focus taken it should not. Off by default
-     * until tried in the car: the Bluetooth stream may pause rather than duck while a card is up.
-     */
-    static boolean takeFocus(Context c) {
-        return prefs(c).getBoolean(KEY_TAKE_FOCUS, false);
-    }
-
-    static void setTakeFocus(Context c, boolean on) {
-        set(c, KEY_TAKE_FOCUS, on);
-    }
-
     private static void set(Context c, String key, boolean on) {
         DebugLog.i("AppSettings", key + " = " + on);
         // commit, not apply: a head unit's process can be killed seconds after a tap (the engine
@@ -106,27 +91,14 @@ final class AppSettings {
 
     static String describe(Context c) {
         return "cluster " + cluster(c) + ", wheel " + wheelKeys(c) + ", keep from music "
-                + muteMedia(c) + ", hold volume " + holdVolume(c) + ", take focus " + takeFocus(c);
+                + muteMedia(c) + ", hold volume " + holdVolume(c);
     }
 
-    /** Where "Send logs" goes ({@link LogSender}): empty until typed; the repository is public. */
-    static String logUrl(Context c) {
-        return prefs(c).getString(KEY_LOG_URL, "");
-    }
-
-    static String logUser(Context c) {
-        return prefs(c).getString(KEY_LOG_USER, "");
-    }
-
-    static String logPassword(Context c) {
-        return prefs(c).getString(KEY_LOG_PASSWORD, "");
-    }
-
-    static void setLogServer(Context c, String url, String user, String password) {
-        prefs(c).edit()
-                .putString(KEY_LOG_URL, url.trim())
-                .putString(KEY_LOG_USER, user.trim())
-                .putString(KEY_LOG_PASSWORD, password)
-                .apply();
+    /** Test builds kept a log server's address and password here; the release has no use for them. */
+    static void forgetLogServer(Context c) {
+        SharedPreferences p = prefs(c);
+        if (p.contains(KEY_LOG_URL) || p.contains(KEY_LOG_USER) || p.contains(KEY_LOG_PASSWORD)) {
+            p.edit().remove(KEY_LOG_URL).remove(KEY_LOG_USER).remove(KEY_LOG_PASSWORD).apply();
+        }
     }
 }
