@@ -171,6 +171,22 @@ public final class WheelNavigator {
     }
 
     /**
+     * One roller detent often reports two or three steps a few ms apart (seen in the car: 3 within
+     * 3 ms); a hand rolling fast is still tens of ms between detents.
+     */
+    static final long ROLLER_BOUNCE_MS = 40L;
+
+    public static boolean isRollerBounce(int direction, long atMs, int lastDirection, long lastAtMs) {
+        return direction == lastDirection && atMs - lastAtMs >= 0
+                && atMs - lastAtMs < ROLLER_BOUNCE_MS;
+    }
+
+    /** A volume step taken by the session (+1 up, -1 down) as the roller key it came from. */
+    public static int rollerKeyForStep(int direction) {
+        return direction > 0 ? ECARX_VOLUME_UP : ECARX_VOLUME_DOWN;
+    }
+
+    /**
      * A key press out of the ECarX input library's log, e.g.
      * {@code onKeyPressed cookie=0 keyCode=200087}. Releases and every other line give -1, so a
      * press is acted on once however long the key is held.

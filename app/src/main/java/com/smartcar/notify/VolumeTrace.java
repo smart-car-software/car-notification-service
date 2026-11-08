@@ -30,8 +30,6 @@ import android.os.Looper;
  * <ul>
  *   <li>every log buffer, unfiltered — which service (ECarX input, car audio, AudioService) acts
  *       on the click;</li>
- *   <li>{@code getevent} — whether the roller is a Linux input device at all; if it is, a root
- *       process can grab it ({@code EVIOCGRAB}) and nobody else sees the click;</li>
  *   <li>the media stream's volume and the media sessions before and after — whether it is the
  *       Android stream that moves, which {@link VolumeGuard} can put back, or the car's own.</li>
  * </ul>
@@ -43,11 +41,9 @@ final class VolumeTrace {
     /** No single quotes: it runs inside {@code su 0 sh -c '…'}. */
     private static final String COMMAND = "echo == before; dumpsys audio | grep -A 8 STREAM_MUSIC;"
             + " dumpsys media_session | head -n 200;"
-            + " echo == devices; getevent -pl 2>&1 | head -n 300;"
-            + " echo == trace; (timeout " + SECONDS + " getevent -lt 2>&1 | sed s/^/EV:/) &"
-            + " timeout " + SECONDS + " logcat -b all -v threadtime -T 1; wait;"
+            + " echo == trace; timeout " + SECONDS + " logcat -b all -v threadtime -T 1;"
             + " echo == after; dumpsys audio | grep -A 8 STREAM_MUSIC; echo == end";
-    private static final String KILL = "pkill getevent; pkill -f \"logcat -b all\"";
+    private static final String KILL = "pkill -f \"logcat -b all\"";
 
     interface Done {
         /** Main thread: everything captured, or what went wrong. */

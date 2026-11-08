@@ -104,6 +104,11 @@ public class WheelNavigatorTest {
         WheelNavigator.Action next = WheelNavigator.Action.NEXT;
         assertTrue(WheelNavigator.isEcho(next, 1_100, next, 1_000));
         assertTrue(WheelNavigator.isEcho(next, 1_240, next, 1_000));
+        assertTrue(WheelNavigator.isRollerBounce(-1, 1_003, -1, 1_000));
+        assertFalse(WheelNavigator.isRollerBounce(-1, 1_100, -1, 1_000));
+        assertFalse(WheelNavigator.isRollerBounce(1, 1_003, -1, 1_000));
+        assertEquals(WheelNavigator.ECARX_VOLUME_UP, WheelNavigator.rollerKeyForStep(1));
+        assertEquals(WheelNavigator.ECARX_VOLUME_DOWN, WheelNavigator.rollerKeyForStep(-1));
         assertFalse(WheelNavigator.isEcho(next, 1_500, next, 1_000));
         assertFalse(WheelNavigator.isEcho(WheelNavigator.Action.CONFIRM, 1_100, next, 1_000));
         assertFalse(WheelNavigator.isEcho(next, 1_000, WheelNavigator.Action.NONE, 0));

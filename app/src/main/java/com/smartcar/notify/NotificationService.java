@@ -82,6 +82,9 @@ public class NotificationService extends Service {
 
     private boolean wheelConnected;
     private boolean mediaHeld;
+    private boolean rollerCaptured;
+    private int lastStepDirection;
+    private long lastStepAt;
 
     // The card on screen.
     private Card shown;
@@ -255,7 +258,8 @@ public class NotificationService extends Service {
         main.removeCallbacks(stopWheel);
         main.removeCallbacks(releaseMedia);
         startWheel();
-        if (card.type == Card.Type.LIST && AppSettings.holdVolume(this) && wheelConnected) {
+        if (card.type == Card.Type.LIST && AppSettings.holdVolume(this)
+                && (wheelConnected || mediaHeld)) {
             volume.start();
         }
         captureRoller(card);
@@ -291,8 +295,29 @@ public class NotificationService extends Service {
      */
     private void captureRoller(Card card) {
         boolean on = mediaHeld && card.type == Card.Type.LIST && AppSettings.holdVolume(this);
-        mediaKeys.captureVolume(on,
-                step -> DebugLog.each(TAG, "Volume step " + step + " taken by the session"));
+        rollerCaptured = on;
+        lastStepDirection = 0;
+        mediaKeys.captureVolume(on, step -> main.post(() -> onVolumeStep(step)));
+    }
+
+    /**
+     * While the session takes the roller, its steps are what scrolls the list: they come with
+     * every click even when the key log has gone quiet (it did, in the car), and the key log's
+     * roller lines are then ignored so a click scrolls once.
+     */
+    private void onVolumeStep(int direction) {
+        if (shown == null || !rollerCaptured) {
+            return;
+        }
+        long now = SystemClock.elapsedRealtime();
+        if (WheelNavigator.isRollerBounce(direction, now, lastStepDirection, lastStepAt)) {
+            DebugLog.each(TAG, "Volume step " + direction + ": same click, dropped");
+            lastStepAt = now;
+            return;
+        }
+        lastStepDirection = direction;
+        lastStepAt = now;
+        onKey(WheelNavigator.rollerKeyForStep(direction), false, "volume step " + direction);
     }
 
     private void showOnCluster(Card card) {
@@ -394,6 +419,7 @@ public class NotificationService extends Service {
         removeWindows();
         volume.stop();
         mediaKeys.captureVolume(false, null); // The roller is the volume again at once.
+        rollerCaptured = false;
         shown = null;
     }
 
@@ -435,9 +461,14 @@ public class NotificationService extends Service {
         }
         if (!keyLog.isRunning()) {
             keyLog.start((code, pressed) -> {
-                if (pressed) {
-                    onKey(code, false, "key log " + code);
+                if (!pressed) {
+                    return;
                 }
+                if (rollerCaptured && (code == WheelNavigator.ECARX_VOLUME_UP
+                        || code == WheelNavigator.ECARX_VOLUME_DOWN)) {
+                    return; // The session's volume step scrolls instead.
+                }
+                onKey(code, false, "key log " + code);
             }, connected -> {
                 DebugLog.i(TAG, connected ? "Wheel key log connected" : "Wheel key log ended");
                 wheelConnected = connected;

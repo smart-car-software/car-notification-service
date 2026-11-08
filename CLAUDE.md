@@ -51,8 +51,11 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   `ecarx.xsf.inputservice` as `AudioManager.adjustSuggestedStreamVolume(USE_DEFAULT_STREAM_TYPE)`,
   which `MediaSessionService` hands to the default volume session (the trace showed Spotify's) — so
   for a list `MediaKeyCatcher.captureVolume` puts the held session on remote playback and takes
-  the step (v0.2.0, not yet confirmed in the car). `VolumeGuard` puts the media volume back if it
-  moved anyway. `VolumeTrace` («Трассировка руля») records everything for 15 s with the keys and
+  the step (confirmed in v0.2.0). That does not stop the volume: ECarX's MediaSessionService still
+  passes the adjustment on, and `com.android.car` (its AudioPolicy volume callback) sets the
+  stream — `VolumeGuard` puts it back after each step. The session's steps are what scrolls a list
+  (key log roller lines are ignored then): the key log once went quiet in the car while "connected".
+  One detent can give 2–3 steps within a few ms — `WheelNavigator.isRollerBounce` folds them. `VolumeTrace` («Трассировка руля») records everything for 15 s with the keys and
   the roller held as for a list.
 - Music in the car came from Spotify and from the phone over Bluetooth (A2DP session).
 - The cluster card is laid out in px against that one panel (display #2, 460 px wide, 288 px down).
