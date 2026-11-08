@@ -31,6 +31,6 @@ final class WheelKeys {
         while (t.getCause() != null && t.getCause() != t) {
             t = t.getCause();
         }
-        return t.getClass().getSimpleName() + ": " + t.getMessage();
+        return AdbPorts.describe(t);
     }
 }

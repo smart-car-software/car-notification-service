@@ -59,6 +59,8 @@ import javax.crypto.Cipher;
 final class LocalAdb implements Closeable {
     static final int[] PORTS = {5555, 5556, 5557, 5037};
 
+    private static final String TAG = "LocalAdb";
+
     private static final int A_CNXN = 0x4e584e43;
     private static final int A_AUTH = 0x48545541;
     private static final int A_OPEN = 0x4e45504f;
@@ -86,6 +88,8 @@ final class LocalAdb implements Closeable {
     private final Socket socket;
     private final DataInputStream in;
     private final OutputStream out;
+    /** adbd answered CNXN with AUTH: the port is adbd, a failure after that is the key. */
+    private boolean askedForKey;
 
     private LocalAdb(Socket socket) throws IOException {
         this.socket = socket;
@@ -93,16 +97,23 @@ final class LocalAdb implements Closeable {
         this.out = socket.getOutputStream();
     }
 
-    /** Connects and authenticates on the first port that answers. */
+    /**
+     * Connects and authenticates on the first port that gives an adb connection. A port that
+     * refuses, times out or fails the handshake (something else listens there) does not end the
+     * search; only when none worked does it throw, with what happened per port.
+     */
     static LocalAdb connect(Context context, StringBuilder report) throws IOException {
         KeyPair keys = keyPair(context);
-        IOException last = null;
-        for (int port : PORTS) {
+        AdbPorts.Failure[] failures = new AdbPorts.Failure[PORTS.length];
+        IOException[] errors = new IOException[PORTS.length];
+        for (int i = 0; i < PORTS.length; i++) {
+            int port = PORTS[i];
             Socket s = new Socket();
             try {
                 s.connect(new InetSocketAddress("127.0.0.1", port), 1500);
             } catch (IOException e) {
-                last = e;
+                failures[i] = AdbPorts.ofConnect(e);
+                errors[i] = e;
                 closeQuietly(s);
                 continue;
             }
@@ -113,11 +124,14 @@ final class LocalAdb implements Closeable {
                 return adb;
             } catch (IOException e) {
                 adb.close();
-                throw e;
+                failures[i] = AdbPorts.ofHandshake(adb.askedForKey);
+                errors[i] = e;
             }
         }
-        throw new IOException("no adb daemon on 127.0.0.1 ports 5555/5556/5557/5037"
-                + (last != null ? " (" + last.getMessage() + ")" : ""));
+        for (int i = 0; i < PORTS.length; i++) {
+            DebugLog.w(TAG, "adb port " + PORTS[i] + ": " + failures[i].text, errors[i]);
+        }
+        throw new IOException(AdbPorts.message(PORTS, failures));
     }
 
     private void handshake(KeyPair keys, StringBuilder report) throws IOException {
@@ -135,6 +149,7 @@ final class LocalAdb implements Closeable {
             if (m.command != A_AUTH || m.arg0 != AUTH_TOKEN) {
                 throw new IOException("adb: unexpected 0x" + Integer.toHexString(m.command));
             }
+            askedForKey = true;
             if (!signed) {
                 send(A_AUTH, AUTH_SIGNATURE, 0, sign((RSAPrivateKey) keys.getPrivate(), m.data));
                 signed = true;
