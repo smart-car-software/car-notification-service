@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean keyLogOn;
+    private static final long HOLD_AT_MS = 2_000L;
 
     /** Every line InputImpl writes — presses, releases, the roller — as it comes. */
     private void toggleKeyLog() {
@@ -215,16 +216,27 @@ public class MainActivity extends AppCompatActivity {
         traceButton.setEnabled(false);
         diag.setText(getString(R.string.diag_volume_trace_running, VolumeTrace.SECONDS));
         // Held the way a list card holds them, so the trace shows what still gets past.
+        // Taken a moment in, so the "before" dumps and the start of the hold are both in the trace.
         MediaKeyCatcher held = new MediaKeyCatcher(this);
-        boolean holding = held.start((code, pressed) -> {
-            if (pressed) {
-                runOnUiThread(() -> appendDiag("media key " + code + " taken by the session"));
-            }
-        });
-        held.captureVolume(holding, step -> runOnUiThread(
-                () -> appendDiag("volume step " + step + " taken by the session")));
-        appendDiag(holding ? "media keys and roller held" : "media keys NOT held");
+        Runnable hold = () -> {
+            boolean holding = held.start((code, pressed) -> {
+                if (pressed) {
+                    runOnUiThread(() -> appendDiag("media key " + code + " taken by the session"));
+                }
+            });
+            held.captureVolume(holding, step -> runOnUiThread(
+                    () -> appendDiag("volume step " + step + " taken by the session")));
+            appendDiag(holding ? "media keys and roller held" : "media keys NOT held");
+        };
+        Runnable release = () -> {
+            held.stop();
+            appendDiag("media keys released");
+        };
+        diag.postDelayed(hold, HOLD_AT_MS);
+        diag.postDelayed(release, VolumeTrace.RELEASE_AT_SECONDS * 1000L);
         trace.start(capture -> {
+            diag.removeCallbacks(hold);
+            diag.removeCallbacks(release);
             held.stop();
             traceButton.setEnabled(true);
             int lines = capture.isEmpty() ? 0 : capture.split("\n").length;

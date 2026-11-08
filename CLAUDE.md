@@ -58,4 +58,11 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   One detent can give 2–3 steps within a few ms — `WheelNavigator.isRollerBounce` folds them. `VolumeTrace` («Трассировка руля») records everything for 15 s with the keys and
   the roller held as for a list.
 - Music in the car came from Spotify and from the phone over Bluetooth (A2DP session).
+- For ⏮ ⏭ ⏯ `ecarx.xsf.inputservice` does three things: `ecarx.intent.action.media_*_pressed/
+  released` broadcasts, a key event into media-session dispatch (that is what `MediaKeyCatcher`
+  takes), and a plain (not ordered — cannot be aborted) `android.intent.action.MEDIA_BUTTON`
+  broadcast. The ECarX media centre receives the last one and, when its own source holds the
+  focus (`KeyManager … isLossFocus(): false`), sends it over AVRCP to the phone — the "music
+  switched to Bluetooth" the driver saw. Why it believed it held the focus while Spotify played
+  is still open (v0.2.2 trace records the focus stack before and after a hold).
 - The cluster card is laid out in px against that one panel (display #2, 460 px wide, 288 px down).

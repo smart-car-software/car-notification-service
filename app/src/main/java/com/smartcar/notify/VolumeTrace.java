@@ -39,10 +39,14 @@ import android.os.Looper;
 final class VolumeTrace {
     static final int SECONDS = 15;
     /** No single quotes: it runs inside {@code su 0 sh -c '…'}. */
+    /** The media keys are let go this far into the trace, so their release is in it too. */
+    static final int RELEASE_AT_SECONDS = 10;
+    private static final String FOCUS = " dumpsys audio | grep -A 12 -i \"focus stack\";";
     private static final String COMMAND = "echo == before; dumpsys audio | grep -A 8 STREAM_MUSIC;"
-            + " dumpsys media_session | head -n 200;"
+            + FOCUS + " dumpsys media_session | head -n 200;"
             + " echo == trace; timeout " + SECONDS + " logcat -b all -v threadtime -T 1;"
-            + " echo == after; dumpsys audio | grep -A 8 STREAM_MUSIC; echo == end";
+            + " echo == after; dumpsys audio | grep -A 8 STREAM_MUSIC;" + FOCUS
+            + " dumpsys media_session | head -n 200; echo == end";
     private static final String KILL = "pkill -f \"logcat -b all\"";
 
     interface Done {
