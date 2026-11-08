@@ -67,6 +67,8 @@ public class NotificationService extends Service {
     private static final long EXPIRY_TICK_MS = 5_000L;
     /** Between two cards the key log stays connected: reconnecting takes a second or more. */
     private static final long WHEEL_LINGER_MS = 15_000L;
+    /** After the last card the media keys stay held this long, for the answering press's echo. */
+    private static final long MEDIA_LINGER_MS = 1_500L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private final CardQueue queue = new CardQueue();
@@ -102,6 +104,13 @@ public class NotificationService extends Service {
     private final Runnable stopWheel = () -> {
         if (shown == null && keyLog != null) {
             keyLog.stop();
+        }
+    };
+    private final Runnable releaseMedia = () -> {
+        if (shown == null && mediaHeld) {
+            mediaKeys.stop();
+            mediaHeld = false;
+            DebugLog.i(TAG, "Media keys released");
         }
     };
     private final Runnable expiryTick = new Runnable() {
@@ -241,8 +250,10 @@ public class NotificationService extends Service {
         selected = card.initial;
         firstVisible = CardLayout.firstVisible(selected, card.options.length,
                 CardLayout.VISIBLE_ROWS, 0);
-        lastAction = WheelNavigator.Action.NONE;
+        // lastAction is kept: the media-session echo of the press that closed the previous card
+        // must not answer this one.
         main.removeCallbacks(stopWheel);
+        main.removeCallbacks(releaseMedia);
         startWheel();
         if (card.type == Card.Type.LIST && AppSettings.holdVolume(this) && wheelConnected) {
             volume.start();
@@ -386,11 +397,11 @@ public class NotificationService extends Service {
     }
 
     private void afterLastCard() {
-        // The music gets its keys back at once; the key log lingers for a card that follows soon.
-        if (mediaHeld) {
-            mediaKeys.stop();
-            mediaHeld = false;
-        }
+        // The key log reports a press before the media session does (by 100–250 ms in the car), so
+        // the press that answered is still on its way there: the music gets its keys back only once
+        // it has arrived and been swallowed. The key log lingers longer, for a card that follows.
+        main.removeCallbacks(releaseMedia);
+        main.postDelayed(releaseMedia, MEDIA_LINGER_MS);
         main.removeCallbacks(stopWheel);
         main.postDelayed(stopWheel, WHEEL_LINGER_MS);
         main.removeCallbacks(expiryTick);
@@ -424,8 +435,8 @@ public class NotificationService extends Service {
             });
         }
         if (AppSettings.muteMedia(this) && !mediaHeld) {
-            // Keeps the player from acting on ⏮ ⏭ ⏯ — and, while it does, is where those presses
-            // arrive: the key log goes quiet for them as long as this holds them.
+            // Keeps the player from acting on ⏮ ⏭ ⏯ — and is a second route for those presses
+            // (after the key log's, or instead of it if the log goes quiet for them).
             mediaHeld = mediaKeys.start((code, pressed) -> {
                 if (pressed) {
                     onKey(code, true, "media " + code);

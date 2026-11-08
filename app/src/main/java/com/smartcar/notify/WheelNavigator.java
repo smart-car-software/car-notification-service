@@ -162,8 +162,9 @@ public final class WheelNavigator {
      * Whether a press is the same one already acted on, arriving by a second route (the key log
      * and the media session can both carry it). Two presses of one key closer than this are not
      * something a driver does; a double "confirm" is the impulse a sliding gate reads as "stop".
+     * In the car the session's copy came 80–240 ms after the log's.
      */
-    static final long SAME_PRESS_MS = 300L;
+    static final long SAME_PRESS_MS = 450L;
 
     public static boolean isEcho(Action action, long atMs, Action lastAction, long lastAtMs) {
         return action == lastAction && atMs - lastAtMs >= 0 && atMs - lastAtMs < SAME_PRESS_MS;

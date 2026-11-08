@@ -40,8 +40,12 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
 
 - Wheel keys reach Android by no ordinary route; only the ECarX `InputImpl` log carries them, read as
   root through the unit's own adbd (`LocalAdb`). The left joystick never reaches Android.
-- While `MediaKeyCatcher` holds the media keys, ⏮ ⏭ ⏯ vanish from the log and arrive in the
-  session as `KEYCODE_MEDIA_*` instead — both routes are read, `WheelNavigator.isEcho` folds doubles.
+- While `MediaKeyCatcher` holds the media keys, ⏮ ⏭ ⏯ arrive by both routes: first in the log, then
+  80–240 ms later in the session as `KEYCODE_MEDIA_*` (seen in the car with v0.1.0; barrier-opener
+  once saw them vanish from the log). Both are read, `WheelNavigator.isEcho` folds doubles — across
+  cards too, or the echo of the press that closed one card answers the next. For the same reason
+  the media keys are released only `MEDIA_LINGER_MS` after the last card: released at once, the
+  answering ⏯ reached the player and paused or started the music.
 - A list scrolls with the volume roller (200024 / 200025) only — the user's requirement. The roller
   cannot be taken: the volume changes anyway. `VolumeGuard` puts the Android media volume back as a
   stopgap; `VolumeTrace` is the diagnostic to find a real way. Whether one roller click is one log

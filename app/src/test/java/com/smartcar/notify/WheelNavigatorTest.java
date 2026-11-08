@@ -103,7 +103,8 @@ public class WheelNavigatorTest {
     public void onePressBothRoutesActsOnce() {
         WheelNavigator.Action next = WheelNavigator.Action.NEXT;
         assertTrue(WheelNavigator.isEcho(next, 1_100, next, 1_000));
-        assertFalse(WheelNavigator.isEcho(next, 1_400, next, 1_000));
+        assertTrue(WheelNavigator.isEcho(next, 1_240, next, 1_000));
+        assertFalse(WheelNavigator.isEcho(next, 1_500, next, 1_000));
         assertFalse(WheelNavigator.isEcho(WheelNavigator.Action.CONFIRM, 1_100, next, 1_000));
         assertFalse(WheelNavigator.isEcho(next, 1_000, WheelNavigator.Action.NONE, 0));
     }
