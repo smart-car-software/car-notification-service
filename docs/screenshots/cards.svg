@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 470" width="1560" height="470" font-family="Roboto, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <!-- Copyright © 2026 smart-car-software. GPL-3.0-or-later.
+       Mock-up of the three card types as CardView draws them on the cluster: 460 px wide, the
+       navigation-hint panel with its rim, the selected answer in the light-blue frame. Not a
+       screenshot: the texts are examples. -->
+  <title>Три типа всплывашек</title>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#1B2633"/><stop offset="1" stop-color="#07090C"/>
+    </radialGradient>
+  </defs>
+  <rect width="1560" height="470" rx="24" fill="url(#bg)"/>
+
+  <g font-size="20" fill="#9AA4B0" text-anchor="middle">
+    <text x="270" y="44">Уведомление · info</text>
+    <text x="780" y="44">Вопрос · question</text>
+    <text x="1290" y="44">Список · list</text>
+  </g>
+
+  <!-- info -->
+  <rect x="40" y="64" width="460" height="90" rx="10" fill="#283442" fill-opacity="0.85" stroke="#55657A" stroke-width="2"/>
+  <text x="270" y="107" font-size="26" fill="#F2F5F8" text-anchor="middle">Тестовое уведомление</text>
+  <text x="270" y="138" font-size="22" fill="#7D8896" text-anchor="middle">Уйдёт само, по ⏯ или по нажатию</text>
+
+  <!-- question -->
+  <rect x="550" y="64" width="460" height="112" rx="10" fill="#283442" fill-opacity="0.85" stroke="#55657A" stroke-width="2"/>
+  <text x="780" y="107" font-size="26" fill="#F2F5F8" text-anchor="middle">Закрыть шлагбаум Дом?</text>
+  <rect x="572" y="122" width="133" height="40" rx="8" fill="#4FB7F0" fill-opacity="0.35" stroke="#4FB7F0" stroke-width="2"/>
+  <text x="638" y="151" font-size="24" fill="#F2F5F8" text-anchor="middle">Да</text>
+  <text x="780" y="151" font-size="24" fill="#F2F5F8" text-anchor="middle">Нет</text>
+  <text x="921" y="151" font-size="24" fill="#F2F5F8" text-anchor="middle">Позже</text>
+
+  <!-- list -->
+  <rect x="1060" y="64" width="460" height="311" rx="10" fill="#283442" fill-opacity="0.85" stroke="#55657A" stroke-width="2"/>
+  <text x="1290" y="107" font-size="26" fill="#F2F5F8" text-anchor="middle">Куда едем?</text>
+  <g font-size="24" fill="#F2F5F8">
+    <rect x="1080" y="142" width="420" height="40" rx="8" fill="#4FB7F0" fill-opacity="0.35" stroke="#4FB7F0" stroke-width="2"/>
+    <text x="1092" y="171">Ужин · 18:00</text>
+    <text x="1092" y="213">Ice Power · по вторникам</text>
+    <text x="1092" y="255">Домой</text>
+    <text x="1092" y="297">Фитнес</text>
+    <text x="1092" y="339">Дача</text>
+  </g>
+  <text x="1290" y="366" font-size="16" fill="#7D8896" text-anchor="middle">▼</text>
+
+  <g font-size="19" fill="#9AA4B0" text-anchor="middle">
+    <text x="270" y="216">Уходит само через несколько секунд,</text>
+    <text x="270" y="242">по ⏯ или по нажатию</text>
+    <text x="780" y="216">1–4 ответа в ряд</text>
+    <text x="780" y="242">⏮ ⏭ — выбор, ⏯ — нажать</text>
+    <text x="1290" y="412">До 50 строк, видно 5</text>
+    <text x="1290" y="438">колёсико громкости — прокрутка, ⏯ — выбрать</text>
+  </g>
+</svg>
