@@ -19,17 +19,25 @@ Android-приложение для головного устройства Geel
 
 ## Как это выглядит
 
-Вопрос от [barrier-opener](https://github.com/smart-car-software/barrier-opener) на приборке,
-под подсказкой навигатора; ⏮ ⏭ двигают голубую рамку, ⏯ отвечает:
+**Вопрос** — например, от [barrier-opener](https://github.com/smart-car-software/barrier-opener);
+⏮ ⏭ двигают голубую рамку, ⏯ отвечает:
 
-![Вопрос «Закрыть шлагбаум Дом?» на приборке Monjaro](docs/screenshots/cluster.svg)
+![Вопрос «Закрыть шлагбаум Дом?» на приборке Monjaro](docs/screenshots/cluster-question.png)
 
-Три типа всплывашек:
+**Список** — например, «Куда едем?» от [route-suggest](https://github.com/smart-car-software/route-suggest);
+колёсико громкости листает, ⏯ выбирает:
 
-![Уведомление, вопрос и список на приборке](docs/screenshots/cards.svg)
+![Список «Куда едем?» на приборке Monjaro](docs/screenshots/cluster-list.png)
 
-<sub>Это схемы, нарисованные по коду карточки (`CardView`: размеры, цвета, рамка), а не снимки
-экрана; тексты — примеры.</sub>
+**Уведомление** — уходит само:
+
+![Уведомление на приборке Monjaro](docs/screenshots/cluster-info.png)
+
+Настройки на магнитоле и кнопки проверки:
+
+![Главный экран приложения на магнитоле](docs/screenshots/main.png)
+
+<sub>Снято на эмуляторе головы Monjaro (Android 9; приборка — MSpeed); тексты карточек — примеры.</sub>
 
 API для клиентов — [docs/API.md](docs/API.md).
 
