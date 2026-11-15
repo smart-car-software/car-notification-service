@@ -76,4 +76,6 @@ dependencies {
     implementation libs.material
 
     testImplementation 'junit:junit:4.13.2'
+    // android.jar's org.json is stubs only: the real one for the JVM tests (Updater).
+    testImplementation 'org.json:json:20240303'
 }

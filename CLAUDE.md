@@ -36,6 +36,11 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
 - `NotificationService` owns everything a card needs while one is up: the overlay windows
   (`ClusterDisplay`, `CardView`), the key log (`WheelKeyLog`), the held media keys
   (`MediaKeyCatcher`), `VolumeGuard`, the chime. It stops itself a minute after the queue empties.
+- Self-update mirrors route-suggest's: `Updater` (pure version compare and release parsing, tested)
+  reads this repo's latest GitHub Release; `UpdateSection` checks at most every 6 h and installs
+  by the button only — silently as root through `LocalAdb` when the wheel keys are on (the unit
+  already trusts our key), else via `PackageInstaller` (`UpdateReceiver`). The release notes are
+  the commit subjects since the previous tag (`release.yml`).
 - Exactly one reply per request with a `reply` PendingIntent, whatever happens (answered, timeout,
   expired, cancelled, invalid, unavailable, service destroyed).
 

@@ -22,15 +22,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.materialswitch.MaterialSwitch;
 
-/** Settings and the three test cards. */
+/** Settings, the three test cards and the update from GitHub Releases. */
 public class MainActivity extends AppCompatActivity {
     private RootStream rootCheck;
+    private UpdateSection update;
     private TextView wheelStatus;
     private TextView overlay;
     private int testCount;
@@ -40,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rootCheck = new RootStream(this);
+
+        TextView pill = findViewById(R.id.textUpdatePill);
+        ScrollView scroll = findViewById(R.id.scroll);
+        pill.setOnClickListener(v -> scroll.smoothScrollTo(0, findViewById(R.id.headingUpdate).getTop()));
+        update = new UpdateSection(this, findViewById(R.id.textUpdateStatus),
+                findViewById(R.id.textUpdateNotes), findViewById(R.id.btnUpdate), pill);
 
         overlay = findViewById(R.id.textOverlay);
         findViewById(R.id.btnOverlay).setOnClickListener(v -> startActivity(new Intent(
@@ -92,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         overlay.setText(Settings.canDrawOverlays(this)
                 ? R.string.overlay_granted : R.string.overlay_needed);
         findViewById(R.id.btnOverlay).setEnabled(!Settings.canDrawOverlays(this));
+        update.check(false);
     }
 
     /** Through the same door a client uses, so the test proves the whole path. */

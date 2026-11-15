@@ -49,6 +49,17 @@
     <string name="answer_yes">Да</string>
     <string name="answer_no">Нет</string>
     <string name="answer_later">Позже</string>
+    <string name="settings_update">Обновление</string>
+    <string name="upd_pill">Доступна %1$s</string>
+    <string name="upd_available">Доступна версия %1$s</string>
+    <string name="upd_install">Обновить до %1$s</string>
+    <string name="upd_current">Версия %1$s</string>
+    <string name="upd_check">Проверить обновления</string>
+    <string name="upd_checking">Проверяю…</string>
+    <string name="upd_latest">Установлена последняя версия</string>
+    <string name="upd_error">Не получилось: %1$s</string>
+    <string name="upd_downloading">Скачиваю %1$s…</string>
+    <string name="upd_allow_unknown">Разрешите установку из этого приложения и нажмите «Обновить» ещё раз</string>
     <string-array name="test_list_rows">
         <item>Дом</item>
         <item>Работа</item>

@@ -21,10 +21,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- «Обновить» without root: Android's installer, which asks. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-    <!-- INTERNET: the wheel's key log comes over a socket to the unit's own adbd (127.0.0.1). -->
+    <!-- INTERNET: the wheel's key log comes over a socket to the unit's own adbd (127.0.0.1);
+         the update is read from GitHub Releases. -->
     <application
         android:name=".NotifyApp"
         android:allowBackup="false"
@@ -58,6 +61,11 @@
 
         <receiver
             android:name=".TestReplyReceiver"
+            android:exported="false" />
+
+        <!-- Android's installer answers our own update session here. -->
+        <receiver
+            android:name=".UpdateReceiver"
             android:exported="false" />
     </application>
 </manifest>

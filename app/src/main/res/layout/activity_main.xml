@@ -17,6 +17,7 @@
   -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
@@ -34,6 +35,20 @@
         <TextView
             style="@style/Hint"
             android:text="@string/main_intro" />
+
+        <!-- A newer release on GitHub: a tap scrolls down to «Обновить». -->
+        <TextView
+            android:id="@+id/textUpdatePill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/update_pill"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:textColor="@color/background"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textOverlay"
@@ -121,5 +136,28 @@
         <TextView
             style="@style/Hint"
             android:text="@string/test_hint" />
+
+        <TextView
+            android:id="@+id/headingUpdate"
+            style="@style/Heading"
+            android:layout_marginTop="24dp"
+            android:text="@string/settings_update" />
+
+        <TextView
+            android:id="@+id/textUpdateStatus"
+            style="@style/Hint" />
+
+        <TextView
+            android:id="@+id/textUpdateNotes"
+            style="@style/Hint"
+            android:layout_marginTop="4dp"
+            android:maxLines="8"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upd_check" />
     </LinearLayout>
 </ScrollView>

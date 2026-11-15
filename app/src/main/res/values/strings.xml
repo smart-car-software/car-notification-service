@@ -49,6 +49,17 @@
     <string name="answer_yes">Yes</string>
     <string name="answer_no">No</string>
     <string name="answer_later">Later</string>
+    <string name="settings_update">Update</string>
+    <string name="upd_pill">%1$s available</string>
+    <string name="upd_available">Version %1$s is available</string>
+    <string name="upd_install">Update to %1$s</string>
+    <string name="upd_current">Version %1$s</string>
+    <string name="upd_check">Check for updates</string>
+    <string name="upd_checking">Checking…</string>
+    <string name="upd_latest">The latest version is installed</string>
+    <string name="upd_error">Failed: %1$s</string>
+    <string name="upd_downloading">Downloading %1$s…</string>
+    <string name="upd_allow_unknown">Allow installing from this app, then tap «Update» again</string>
     <string-array name="test_list_rows">
         <item>Home</item>
         <item>Work</item>
