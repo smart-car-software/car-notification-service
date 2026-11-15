@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,7 +39,7 @@ import java.util.concurrent.Executors;
 /**
  * The "Update" block of the screen, after route-suggest's: the latest release looked at on
  * opening (every few hours, the answer kept in between) and installed by the button only. The
- * pill at the top says a newer one exists; the block itself is at the bottom.
+ * pill in the header says a newer one exists; the block itself is a panel of its own.
  */
 final class UpdateSection {
     private static final String TAG = "Updater";
@@ -127,6 +128,11 @@ final class UpdateSection {
         notes.setText(n);
         notes.setVisibility(n.isEmpty() ? View.GONE : View.VISIBLE);
         button.setEnabled(!busy);
+        // «Обновить до vX» is the screen's one strong action; «Проверить» a quiet one.
+        boolean strong = r != null && !busy;
+        button.setBackgroundTintList(ColorStateList.valueOf(activity.getColor(
+                strong ? R.color.accent : R.color.accent_dim)));
+        button.setTextColor(activity.getColor(strong ? R.color.on_accent : R.color.accent));
         button.setText(busy ? activity.getString(R.string.upd_checking)
                 : r != null ? activity.getString(R.string.upd_install, r.tag)
                 : activity.getString(R.string.upd_check));

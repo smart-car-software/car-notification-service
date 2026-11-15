@@ -19,9 +19,11 @@ package com.smartcar.notify;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -45,7 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
         TextView pill = findViewById(R.id.textUpdatePill);
         ScrollView scroll = findViewById(R.id.scroll);
-        pill.setOnClickListener(v -> scroll.smoothScrollTo(0, findViewById(R.id.headingUpdate).getTop()));
+        pill.setOnClickListener(v -> {
+            View panel = findViewById(R.id.panelUpdate);
+            Rect r = new Rect();
+            panel.getDrawingRect(r);
+            scroll.offsetDescendantRectToMyCoords(panel, r);
+            scroll.smoothScrollTo(0, r.top);
+        });
         update = new UpdateSection(this, findViewById(R.id.textUpdateStatus),
                 findViewById(R.id.textUpdateNotes), findViewById(R.id.btnUpdate), pill);
 

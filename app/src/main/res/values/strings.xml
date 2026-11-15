@@ -50,6 +50,8 @@
     <string name="answer_no">No</string>
     <string name="answer_later">Later</string>
     <string name="settings_update">Update</string>
+    <string name="sec_display">Display</string>
+    <string name="sec_wheel">Steering wheel</string>
     <string name="upd_pill">%1$s available</string>
     <string name="upd_available">Version %1$s is available</string>
     <string name="upd_install">Update to %1$s</string>

@@ -16,148 +16,209 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<!-- route-suggest's layout: a header with the pill, then two columns of panels — the settings
+     on the left, the trial and the update on the right. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/screen_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            style="@style/Heading"
-            android:text="@string/app_name" />
-
-        <TextView
-            style="@style/Hint"
-            android:text="@string/main_intro" />
-
-        <!-- A newer release on GitHub: a tap scrolls down to «Обновить». -->
-        <TextView
-            android:id="@+id/textUpdatePill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/update_pill"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="6dp"
-            android:textColor="@color/background"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/textOverlay"
-            style="@style/Hint"
-            android:layout_marginTop="12dp" />
-
-        <Button
-            android:id="@+id/btnOverlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/overlay_grant" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchCluster"
-            style="@style/Switch"
-            android:text="@string/settings_cluster" />
-
-        <TextView
-            style="@style/Hint"
-            android:text="@string/settings_cluster_hint" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchWheelKeys"
-            style="@style/Switch"
-            android:text="@string/settings_wheel_keys" />
-
-        <TextView
-            style="@style/Hint"
-            android:text="@string/settings_wheel_keys_hint" />
-
-        <TextView
-            android:id="@+id/textWheelStatus"
-            style="@style/Hint" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchMuteMedia"
-            style="@style/Switch"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings_mute_media" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchHoldVolume"
-            style="@style/Switch"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings_hold_volume" />
-
-        <TextView
-            style="@style/Hint"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings_hold_volume_hint" />
-
-        <TextView
-            style="@style/Heading"
-            android:layout_marginTop="24dp"
-            android:text="@string/test_title" />
+        android:paddingHorizontal="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnTestInfo"
+            <TextView
+                style="@style/Heading"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/test_info" />
+                android:text="@string/app_name" />
 
-            <Button
-                android:id="@+id/btnTestQuestion"
-                android:layout_width="0dp"
+            <!-- A newer release on GitHub: a tap brings «Обновить» into view. -->
+            <TextView
+                android:id="@+id/textUpdatePill"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_weight="1"
-                android:text="@string/test_question" />
-
-            <Button
-                android:id="@+id/btnTestList"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/test_list" />
+                android:background="@drawable/update_pill"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:textColor="@color/on_accent"
+                android:textSize="13sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
             style="@style/Hint"
-            android:text="@string/test_hint" />
-
-        <TextView
-            android:id="@+id/headingUpdate"
-            style="@style/Heading"
-            android:layout_marginTop="24dp"
-            android:text="@string/settings_update" />
-
-        <TextView
-            android:id="@+id/textUpdateStatus"
-            style="@style/Hint" />
-
-        <TextView
-            android:id="@+id/textUpdateNotes"
-            style="@style/Hint"
             android:layout_marginTop="4dp"
-            android:maxLines="8"
-            android:visibility="gone" />
+            android:layout_marginBottom="16dp"
+            android:text="@string/main_intro" />
 
-        <Button
-            android:id="@+id/btnUpdate"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/upd_check" />
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout style="@style/Panel">
+
+                    <TextView
+                        style="@style/PanelLabel"
+                        android:text="@string/sec_display" />
+
+                    <TextView
+                        android:id="@+id/textOverlay"
+                        style="@style/Hint"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btnOverlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/overlay_grant" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchCluster"
+                        style="@style/Switch"
+                        android:text="@string/settings_cluster" />
+
+                    <TextView
+                        style="@style/Hint"
+                        android:text="@string/settings_cluster_hint" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/Panel">
+
+                    <TextView
+                        style="@style/PanelLabel"
+                        android:text="@string/sec_wheel" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchWheelKeys"
+                        style="@style/Switch"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/settings_wheel_keys" />
+
+                    <TextView
+                        style="@style/Hint"
+                        android:text="@string/settings_wheel_keys_hint" />
+
+                    <TextView
+                        android:id="@+id/textWheelStatus"
+                        style="@style/Hint"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchMuteMedia"
+                        style="@style/Switch"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/settings_mute_media" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchHoldVolume"
+                        style="@style/Switch"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/settings_hold_volume" />
+
+                    <TextView
+                        style="@style/Hint"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/settings_hold_volume_hint" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout style="@style/Panel">
+
+                    <TextView
+                        style="@style/PanelLabel"
+                        android:text="@string/test_title" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnTestInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/test_info" />
+
+                        <Button
+                            android:id="@+id/btnTestQuestion"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/test_question" />
+
+                        <Button
+                            android:id="@+id/btnTestList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/test_list" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Hint"
+                        android:text="@string/test_hint" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/panelUpdate"
+                    style="@style/Panel">
+
+                    <TextView
+                        style="@style/PanelLabel"
+                        android:text="@string/settings_update" />
+
+                    <TextView
+                        android:id="@+id/textUpdateStatus"
+                        style="@style/Hint"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/textUpdateNotes"
+                        style="@style/Hint"
+                        android:layout_marginTop="6dp"
+                        android:maxLines="8"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/upd_check" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
