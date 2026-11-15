@@ -202,7 +202,7 @@ final class ClusterMenu {
                     dim.getClass().getMethod("unregisterDimMenuInteractionCallback", cb)
                             .invoke(dim, callback);
                 } catch (ReflectiveOperationException | RuntimeException | LinkageError e) {
-                    DebugLog.w(TAG, "unregister: " + e);
+                    DebugLog.w(TAG, "unregister", e);
                 }
             }
             dim = null;
