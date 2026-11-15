@@ -107,6 +107,16 @@ public class MainActivity extends AppCompatActivity {
             MenuService.send(this, new Intent(MenuService.ACTION_SETTINGS));
         });
         menuNavi.setOnCheckedChangeListener((b, on) -> AppSettings.setMenuNavigationFirst(this, on));
+        MaterialSwitch menuThird = findViewById(R.id.switchMenuThird);
+        menuThird.setChecked(AppSettings.menuThirdTab(this));
+        menuThird.setOnCheckedChangeListener((b, on) -> {
+            AppSettings.setMenuThirdTab(this, on);
+            probe(on ? DimTabs.ACTIVE_MEDIA_PLAYING : DimTabs.ACTIVE_NO_MEDIA);
+        });
+        findViewById(R.id.btnProbeMedia).setOnClickListener(v -> probe(DimTabs.ACTIVE_MEDIA_PLAYING));
+        findViewById(R.id.btnProbeCall).setOnClickListener(v -> probe(DimTabs.ACTIVE_PHONE_CALLING));
+        findViewById(R.id.btnProbeNoMedia).setOnClickListener(v -> probe(DimTabs.ACTIVE_NO_MEDIA));
+        findViewById(R.id.btnProbeIdle).setOnClickListener(v -> probe(DimTabs.ACTIVE_IDLE));
         MenuService.start(this);
 
         findViewById(R.id.btnTestInfo).setOnClickListener(v -> test(NotifyContract.TYPE_INFO,
@@ -148,6 +158,11 @@ public class MainActivity extends AppCompatActivity {
             ui.postDelayed(this, 2_000);
         }
     };
+
+    /** Tells the cluster a control-centre state: the trial of its third tab. */
+    private void probe(int type) {
+        MenuService.send(this, new Intent(MenuService.ACTION_PROBE).putExtra("type", type));
+    }
 
     /** Through the same door a client uses, so the test proves the whole path. */
     private void test(String type, String title, String text, String[] options) {

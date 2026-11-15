@@ -231,14 +231,53 @@ final class ClusterMenu {
         dimTab = tab;
         dimTabAt = now;
         state = "подключено, " + DimTabs.name(tab);
+        boolean opened = previous == DimTabs.UNKNOWN || previous == DimTabs.CLOSED
+                || previous == DimTabs.OPEN_OTHER || since > DimTabs.FRESH_MS;
+        // The third tab is there only while the cluster believes the control centre is active.
+        if (opened && tab != DimTabs.CLOSED && AppSettings.menuThirdTab(c)) {
+            controlCenter(DimTabs.ACTIVE_MEDIA_PLAYING);
+        }
         if (AppSettings.menuNavigationFirst(c) && DimTabs.jumpToNavigation(previous, tab, since)) {
             log("вкладка: " + DimTabs.name(tab) + " — переключаю на навигацию");
             switchTo(DimTabs.NAVIGATION);
-            show(tab, 0); // until the unit answers with the navigation tab
+            show(lists(tab), 0); // until the unit answers with the navigation tab
             return;
         }
         log("вкладка: " + DimTabs.name(tab));
-        show(tab, 0);
+        show(lists(tab), 0);
+    }
+
+    /**
+     * Whose lists the cluster's {@code tab} shows. With the third tab on (the trial), the lists
+     * sent for the phone tab go to the control centre's, and the phone tab is left to the unit.
+     */
+    private int lists(int tab) {
+        if (!AppSettings.menuThirdTab(c)) return tab;
+        if (tab == DimTabs.CONTROL_CENTER) return DimTabs.PHONE;
+        return tab == DimTabs.PHONE ? DimTabs.UNKNOWN : tab;
+    }
+
+    /**
+     * Tells the cluster what the control centre has ({@code ACTIVE_TYPE_*}: 1 media playing,
+     * 2 a call, 3 no media, 4 no call, 0 idle) — {@code notifyDimControlCenterActiveType}, DIM
+     * message (2, 8, 0x0F, [type]). A photo of a Monjaro with music playing shows a third tab
+     * (a gear) that the user's car, with two, does not: the guess is that this message brings it.
+     * Not confirmed in the car; the journal says what the cluster answers.
+     */
+    void controlCenter(int type) {
+        main.post(() -> {
+            if (dim == null) {
+                log("центр управления: нет подписки на приборку");
+                return;
+            }
+            try {
+                dim.getClass().getMethod("notifyDimControlCenterActiveType", int.class)
+                        .invoke(dim, type);
+                log("центр управления: отправлено состояние " + type);
+            } catch (ReflectiveOperationException | RuntimeException | LinkageError e) {
+                log("notifyDimControlCenterActiveType(" + type + "): " + text(e));
+            }
+        });
     }
 
     /** Asks the cluster for {@code tab}; it answers with {@code onTabChanged} if it obeys. */
@@ -308,7 +347,7 @@ final class ClusterMenu {
         }
         m.put(t);
         if (shown == dimTab) draw();
-        else if (this.dimTab == dimTab && shown == DimTabs.UNKNOWN) show(dimTab, 0);
+        else if (lists(this.dimTab) == dimTab && shown == DimTabs.UNKNOWN) show(dimTab, 0);
     }
 
     /** On the main thread. */

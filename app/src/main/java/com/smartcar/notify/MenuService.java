@@ -38,6 +38,8 @@ import java.util.Map;
 public class MenuService extends Service implements ClusterMenu.Listener {
     static final String ACTION_START = "com.smartcar.notify.MENU_START";
     static final String ACTION_SETTINGS = "com.smartcar.notify.MENU_SETTINGS";
+    /** From the app's screen: tell the cluster a control-centre state (extra {@code type}). */
+    static final String ACTION_PROBE = "com.smartcar.notify.MENU_PROBE";
     private static final String TAG = "MenuService";
     private static final String CHANNEL_ID = "menu";
     private static final int NOTIFICATION_ID = 3;
@@ -75,6 +77,7 @@ public class MenuService extends Service implements ClusterMenu.Listener {
         menu = new ClusterMenu(this, this);
         if (AppSettings.menu(this)) {
             menu.start();
+            if (AppSettings.menuThirdTab(this)) menu.controlCenter(DimTabs.ACTIVE_MEDIA_PLAYING);
             for (String pkg : AppSettings.menuClients(this)) ask(pkg);
         }
     }
@@ -91,6 +94,7 @@ public class MenuService extends Service implements ClusterMenu.Listener {
         if (NotifyContract.ACTION_MENU_TAB.equals(a)) put(intent);
         else if (NotifyContract.ACTION_MENU_REMOVE.equals(a)) remove(intent);
         else if (NotifyContract.ACTION_MENU_TRIAL.equals(a)) trial(intent);
+        else if (ACTION_PROBE.equals(a)) menu.controlCenter(intent.getIntExtra("type", 0));
         else if (ACTION_SETTINGS.equals(a)) {
             menu.start();
             for (String pkg : AppSettings.menuClients(this)) ask(pkg);

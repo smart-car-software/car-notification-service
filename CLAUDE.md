@@ -49,6 +49,14 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   tab. The phone tab and `requestDimSwitchTabWindow` (a menu just opened on the phone goes to
   navigation) are not confirmed in the car yet; what the cluster said is in the app's journal.
   The lists live in memory: `MENU_WANTED` asks the apps (by package) for them again.
+- The third tab is a trial (`AppSettings.menuThirdTab`, off): the user's cluster shows two tabs,
+  a photo of another Monjaro with music playing shows a third (a gear). The guess: the cluster
+  shows its control-centre tab (4) while told the centre is active —
+  `notifyDimControlCenterActiveType(1)`, DIM message (2, 8, 0x0F, [type]); other real senders in
+  `DimMenuInteraction`: `requestDimSwitchTabWindow` (0, 8, 4, [tab]), `notifyDimEnterControlCenter`
+  (2, 8, 0x12, [action]). The lists for navigation / contacts / media (`updateAddresses`,
+  `ContactsInteraction`, `MediaInteraction`) are empty stubs in this firmware's AdaptAPI: no
+  native rows that way. With the trial on, the phone tab's lists go to tab 4.
 - Exactly one reply per request with a `reply` PendingIntent, whatever happens (answered, timeout,
   expired, cancelled, invalid, unavailable, service destroyed).
 

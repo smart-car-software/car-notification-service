@@ -29,6 +29,12 @@ final class DimTabs {
     static final int MUSIC = 3;
     static final int CONTROL_CENTER = 4;
     static final int CLOSED = 5;
+    /** {@code IDimMenuInteraction.ACTIVE_TYPE_*}: what the control centre has, as told to the cluster. */
+    static final int ACTIVE_IDLE = 0;
+    static final int ACTIVE_MEDIA_PLAYING = 1;
+    static final int ACTIVE_PHONE_CALLING = 2;
+    static final int ACTIVE_NO_MEDIA = 3;
+    static final int ACTIVE_NO_CALLING = 4;
     /** Longer than this since the last tab change, and the menu counts as opened afresh. */
     static final long FRESH_MS = 15_000L;
 

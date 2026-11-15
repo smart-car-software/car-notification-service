@@ -29,6 +29,7 @@ final class AppSettings {
     private static final String KEY_MENU = "menu";
     private static final String KEY_MENU_NAVI = "menu_navigation_first";
     private static final String KEY_MENU_CLIENTS = "menu_clients";
+    private static final String KEY_MENU_THIRD = "menu_third_tab";
     private static final String KEY_LOG_URL = "log_url";
     private static final String KEY_LOG_USER = "log_user";
     private static final String KEY_LOG_PASSWORD = "log_password";
@@ -101,6 +102,18 @@ final class AppSettings {
 
     static void setMenuNavigationFirst(Context c, boolean on) {
         set(c, KEY_MENU_NAVI, on);
+    }
+
+    /**
+     * A trial: ask the cluster for its third tab (the control centre) and show there the lists
+     * sent for the phone tab. Off until the car has shown that the cluster obeys.
+     */
+    static boolean menuThirdTab(Context c) {
+        return prefs(c).getBoolean(KEY_MENU_THIRD, false);
+    }
+
+    static void setMenuThirdTab(Context c, boolean on) {
+        set(c, KEY_MENU_THIRD, on);
     }
 
     /** The apps that have put a tab in the menu: asked for it again when this app starts. */
