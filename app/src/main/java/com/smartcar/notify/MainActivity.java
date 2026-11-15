@@ -37,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private UpdateSection update;
     private TextView wheelStatus;
     private TextView overlay;
-    private TextView menuState;
-    private TextView menuJournal;
-    private final android.os.Handler ui = new android.os.Handler(android.os.Looper.getMainLooper());
     private int testCount;
 
     @Override
@@ -94,31 +91,6 @@ public class MainActivity extends AppCompatActivity {
             checkRoot();
         }
 
-        MaterialSwitch menu = findViewById(R.id.switchMenu);
-        MaterialSwitch menuNavi = findViewById(R.id.switchMenuNavigation);
-        menuState = findViewById(R.id.textMenuState);
-        menuJournal = findViewById(R.id.textMenuJournal);
-        menu.setChecked(AppSettings.menu(this));
-        menuNavi.setChecked(AppSettings.menuNavigationFirst(this));
-        menuNavi.setEnabled(menu.isChecked());
-        menu.setOnCheckedChangeListener((b, on) -> {
-            AppSettings.setMenu(this, on);
-            menuNavi.setEnabled(on);
-            MenuService.send(this, new Intent(MenuService.ACTION_SETTINGS));
-        });
-        menuNavi.setOnCheckedChangeListener((b, on) -> AppSettings.setMenuNavigationFirst(this, on));
-        MaterialSwitch menuThird = findViewById(R.id.switchMenuThird);
-        menuThird.setChecked(AppSettings.menuThirdTab(this));
-        menuThird.setOnCheckedChangeListener((b, on) -> {
-            AppSettings.setMenuThirdTab(this, on);
-            probe(on ? DimTabs.ACTIVE_MEDIA_PLAYING : DimTabs.ACTIVE_NO_MEDIA);
-        });
-        findViewById(R.id.btnProbeMedia).setOnClickListener(v -> probe(DimTabs.ACTIVE_MEDIA_PLAYING));
-        findViewById(R.id.btnProbeCall).setOnClickListener(v -> probe(DimTabs.ACTIVE_PHONE_CALLING));
-        findViewById(R.id.btnProbeNoMedia).setOnClickListener(v -> probe(DimTabs.ACTIVE_NO_MEDIA));
-        findViewById(R.id.btnProbeIdle).setOnClickListener(v -> probe(DimTabs.ACTIVE_IDLE));
-        MenuService.start(this);
-
         findViewById(R.id.btnTestInfo).setOnClickListener(v -> test(NotifyContract.TYPE_INFO,
                 getString(R.string.test_info_title), getString(R.string.test_info_text), null));
         findViewById(R.id.btnTestQuestion).setOnClickListener(v -> test(NotifyContract.TYPE_QUESTION,
@@ -137,31 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 ? R.string.overlay_granted : R.string.overlay_needed);
         findViewById(R.id.btnOverlay).setEnabled(!Settings.canDrawOverlays(this));
         update.check(false);
-        drawMenu.run();
-    }
-
-    @Override
-    protected void onPause() {
-        ui.removeCallbacks(drawMenu);
-        super.onPause();
-    }
-
-    /** What the cluster said: in the car there is no adb, this is the menu's only diagnostics. */
-    private final Runnable drawMenu = new Runnable() {
-        @Override
-        public void run() {
-            String s = ClusterMenu.state;
-            menuState.setText(s.isEmpty() ? getString(R.string.menu_state_none)
-                    : getString(R.string.menu_state, s));
-            java.util.List<String> j = ClusterMenu.journal();
-            menuJournal.setText(android.text.TextUtils.join("\n", j.subList(0, Math.min(12, j.size()))));
-            ui.postDelayed(this, 2_000);
-        }
-    };
-
-    /** Tells the cluster a control-centre state: the trial of its third tab. */
-    private void probe(int type) {
-        MenuService.send(this, new Intent(MenuService.ACTION_PROBE).putExtra("type", type));
     }
 
     /** Through the same door a client uses, so the test proves the whole path. */
