@@ -24,7 +24,16 @@
     <!-- «Обновить» without root: Android's installer, which asks. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- The cluster menu is up from the unit's start. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!-- The apps that put lists in the cluster menu: asked for them again (MENU_WANTED). -->
+    <queries>
+        <package android:name="com.smartcar.route" />
+        <package android:name="com.barrieropener.app" />
+    </queries>
 
     <!-- INTERNET: the wheel's key log comes over a socket to the unit's own adbd (127.0.0.1);
          the update is read from GitHub Releases. -->
@@ -56,6 +65,23 @@
             <intent-filter>
                 <action android:name="com.smartcar.notify.action.SHOW" />
                 <action android:name="com.smartcar.notify.action.CANCEL" />
+                <action android:name="com.smartcar.notify.action.MENU_TAB" />
+                <action android:name="com.smartcar.notify.action.MENU_REMOVE" />
+                <action android:name="com.smartcar.notify.action.MENU_TRIAL" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Holds the cluster menu (ECarX's DimMenuInteraction) while the unit is on. -->
+        <service
+            android:name=".MenuService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 

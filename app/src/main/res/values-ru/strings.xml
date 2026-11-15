@@ -52,6 +52,14 @@
     <string name="settings_update">Обновление</string>
     <string name="sec_display">Показ</string>
     <string name="sec_wheel">Руль</string>
+    <string name="sec_menu">Меню приборки</string>
+    <string name="settings_menu">Списки приложений в меню приборки</string>
+    <string name="settings_menu_hint">Route Suggest кладёт свои места на вкладку навигации, Barrier Opener — шлагбаумы на вкладку телефона. Левый джойстик руля — листать и выбрать.</string>
+    <string name="settings_menu_navigation">Открывать меню на вкладке навигации</string>
+    <string name="menu_state">Приборка: %1$s</string>
+    <string name="menu_state_none">Приборка: ещё не подключено</string>
+    <string name="channel_menu">Меню приборки</string>
+    <string name="notification_menu">Списки приложений в меню приборки</string>
     <string name="upd_pill">Доступна %1$s</string>
     <string name="upd_available">Доступна версия %1$s</string>
     <string name="upd_install">Обновить до %1$s</string>

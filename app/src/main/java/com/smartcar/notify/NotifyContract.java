@@ -92,6 +92,44 @@ final class NotifyContract {
      */
     static final String RESULT_UNAVAILABLE = "unavailable";
 
+    // ------------------------------------------------------------------ the cluster menu
+
+    /**
+     * Put the app's list in the cluster menu (or replace its rows): {@link #EXTRA_TAB},
+     * {@link #EXTRA_DIM_TAB}, {@link #EXTRA_TITLE}, {@link #EXTRA_OPTIONS} (0–50 rows),
+     * optionally {@link #EXTRA_KEYS}, {@link #EXTRA_EMPTY}, {@link #EXTRA_ORDER}, and
+     * {@link #EXTRA_PICK}, where a pressed row goes.
+     */
+    static final String ACTION_MENU_TAB = "com.smartcar.notify.action.MENU_TAB";
+    /** Take the app's list ({@link #EXTRA_TAB}) out of the menu. */
+    static final String ACTION_MENU_REMOVE = "com.smartcar.notify.action.MENU_REMOVE";
+    /** Show the app's list ({@link #EXTRA_TAB}) on the cluster for 30 s, as a test. */
+    static final String ACTION_MENU_TRIAL = "com.smartcar.notify.action.MENU_TRIAL";
+    /**
+     * Sent to each app that has put a list (by package, to its manifest receiver) when its tab
+     * comes on screen and when this service starts: send your list again, it may be stale.
+     */
+    static final String ACTION_MENU_WANTED = "com.smartcar.notify.action.MENU_WANTED";
+
+    /** String: the list's id, unique per app (your package, or package + ":" + name). */
+    static final String EXTRA_TAB = "tab";
+    /** int: on which of the cluster's tabs: {@link #DIM_TAB_NAVIGATION} or {@link #DIM_TAB_PHONE}. */
+    static final String EXTRA_DIM_TAB = "dim_tab";
+    /** String[], optional: what the app calls each row, sent back with the pick. */
+    static final String EXTRA_KEYS = "keys";
+    /** String, optional: shown when there are no rows. */
+    static final String EXTRA_EMPTY = "empty";
+    /** int, optional: lists on the same cluster tab are ordered by it. */
+    static final String EXTRA_ORDER = "order";
+    /** PendingIntent: gets {@link #EXTRA_TAB}, {@link #EXTRA_KEY}, {@link #EXTRA_INDEX}, {@link #EXTRA_OPTION}. */
+    static final String EXTRA_PICK = "pick";
+    /** String: the pressed row's key. */
+    static final String EXTRA_KEY = "key";
+
+    static final int DIM_TAB_PHONE = DimTabs.PHONE;
+    static final int DIM_TAB_NAVIGATION = DimTabs.NAVIGATION;
+    static final int MAX_MENU_ROWS = 50;
+
     private NotifyContract() {
     }
 }

@@ -52,6 +52,14 @@
     <string name="settings_update">Update</string>
     <string name="sec_display">Display</string>
     <string name="sec_wheel">Steering wheel</string>
+    <string name="sec_menu">Cluster menu</string>
+    <string name="settings_menu">Apps\' lists in the cluster menu</string>
+    <string name="settings_menu_hint">Route Suggest puts its places on the navigation tab, Barrier Opener its gates on the phone tab. The left joystick scrolls and presses.</string>
+    <string name="settings_menu_navigation">Open the menu on the navigation tab</string>
+    <string name="menu_state">Cluster: %1$s</string>
+    <string name="menu_state_none">Cluster: not connected yet</string>
+    <string name="channel_menu">Cluster menu</string>
+    <string name="notification_menu">The apps\' lists in the cluster menu</string>
     <string name="upd_pill">%1$s available</string>
     <string name="upd_available">Version %1$s is available</string>
     <string name="upd_install">Update to %1$s</string>

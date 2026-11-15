@@ -26,6 +26,9 @@ final class AppSettings {
     private static final String KEY_WHEEL = "wheel_keys";
     private static final String KEY_MUTE = "mute_media";
     private static final String KEY_HOLD_VOLUME = "hold_volume";
+    private static final String KEY_MENU = "menu";
+    private static final String KEY_MENU_NAVI = "menu_navigation_first";
+    private static final String KEY_MENU_CLIENTS = "menu_clients";
     private static final String KEY_LOG_URL = "log_url";
     private static final String KEY_LOG_USER = "log_user";
     private static final String KEY_LOG_PASSWORD = "log_password";
@@ -80,6 +83,35 @@ final class AppSettings {
 
     static void setHoldVolume(Context c, boolean on) {
         set(c, KEY_HOLD_VOLUME, on);
+    }
+
+    /** The apps' lists in the cluster's menu ({@link ClusterMenu}); on by default. */
+    static boolean menu(Context c) {
+        return prefs(c).getBoolean(KEY_MENU, true);
+    }
+
+    static void setMenu(Context c, boolean on) {
+        set(c, KEY_MENU, on);
+    }
+
+    /** The menu opened by the wheel's button goes to navigation, not the phone (the user's wish). */
+    static boolean menuNavigationFirst(Context c) {
+        return prefs(c).getBoolean(KEY_MENU_NAVI, true);
+    }
+
+    static void setMenuNavigationFirst(Context c, boolean on) {
+        set(c, KEY_MENU_NAVI, on);
+    }
+
+    /** The apps that have put a tab in the menu: asked for it again when this app starts. */
+    static java.util.Set<String> menuClients(Context c) {
+        return new java.util.HashSet<>(prefs(c).getStringSet(KEY_MENU_CLIENTS,
+                java.util.Collections.emptySet()));
+    }
+
+    static void addMenuClient(Context c, String pkg) {
+        java.util.Set<String> s = menuClients(c);
+        if (s.add(pkg)) prefs(c).edit().putStringSet(KEY_MENU_CLIENTS, s).apply();
     }
 
     private static void set(Context c, String key, boolean on) {

@@ -33,6 +33,10 @@ public class RequestReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (NotifyContract.ACTION_SHOW.equals(action) || NotifyContract.ACTION_CANCEL.equals(action)) {
             NotificationService.deliver(context, intent);
+        } else if (NotifyContract.ACTION_MENU_TAB.equals(action)
+                || NotifyContract.ACTION_MENU_REMOVE.equals(action)
+                || NotifyContract.ACTION_MENU_TRIAL.equals(action)) {
+            MenuService.send(context, intent);
         }
     }
 }

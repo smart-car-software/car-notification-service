@@ -41,6 +41,14 @@ Tag `v*` → `release.yml` → GitHub Release with `car-notification-service-<ta
   by the button only — silently as root through `LocalAdb` when the wheel keys are on (the unit
   already trusts our key), else via `PackageInstaller` (`UpdateReceiver`). The release notes are
   the commit subjects since the previous tag (`release.yml`).
+- The cluster menu (`MenuService`, `ClusterMenu`, pure `MenuModel` / `DimTabs`): the apps' lists
+  on the tabs of the cluster's own menu — route-suggest's places on navigation, barrier-opener's
+  gates on phone. ECarX `DimMenuInteraction` by reflection (`onTabChanged`, the joystick as
+  `ECARX_KEY_DIM*` broadcasts, the overlay on display 2 at 740/720, 414×284) — moved here from
+  route-suggest, where it was learned from mNavi's APK and confirmed in the car for the navigation
+  tab. The phone tab and `requestDimSwitchTabWindow` (a menu just opened on the phone goes to
+  navigation) are not confirmed in the car yet; what the cluster said is in the app's journal.
+  The lists live in memory: `MENU_WANTED` asks the apps (by package) for them again.
 - Exactly one reply per request with a `reply` PendingIntent, whatever happens (answered, timeout,
   expired, cancelled, invalid, unavailable, service destroyed).
 

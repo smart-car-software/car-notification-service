@@ -143,6 +143,43 @@
                         android:layout_marginStart="16dp"
                         android:text="@string/settings_hold_volume_hint" />
                 </LinearLayout>
+
+                <!-- The apps' lists in the cluster's own menu, and what the cluster said. -->
+                <LinearLayout style="@style/Panel">
+
+                    <TextView
+                        style="@style/PanelLabel"
+                        android:text="@string/sec_menu" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchMenu"
+                        style="@style/Switch"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/settings_menu" />
+
+                    <TextView
+                        style="@style/Hint"
+                        android:text="@string/settings_menu_hint" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchMenuNavigation"
+                        style="@style/Switch"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/settings_menu_navigation" />
+
+                    <TextView
+                        android:id="@+id/textMenuState"
+                        style="@style/Hint"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/textMenuJournal"
+                        style="@style/Hint"
+                        android:fontFamily="monospace"
+                        android:textIsSelectable="true"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
